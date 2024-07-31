@@ -1,7 +1,8 @@
 @use "../variables" as *;
 
 :root {
-  --icon-size: #{$icon-m};
+  --icon-size-m: #{$icon-m};
+  --icon-size-l: #{$icon-l};
   --border-radius: #{$border-radius};
   --border: #{$border};
 }
