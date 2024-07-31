@@ -1,0 +1,23 @@
+@use "../variables" as *;
+
+:root {
+  --primary: #{$purple};
+  --primary-light: #{$purple-light};
+  --primary-lighter: #{$purple-lighter};
+  --primary-dark: #{$purple-dark};
+
+  --secondary: #{$grey};
+  --secondary-light: #{$grey-light};
+
+  --purple: #{$purple};
+  --purple-light: #{$purple-light};
+  --purple-dark: #{$purple-dark};
+  --red: #{$red};
+  --red-dark: #{$red-dark};
+  --yellow: #{$yellow};
+  --yellow-dark: #{$yellow-dark};
+  --green: #{$green};
+  --green-dark: #{$green-dark};
+
+  --stroke: #{$grey-light};
+}

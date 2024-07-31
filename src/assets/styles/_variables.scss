@@ -1,0 +1,28 @@
+// Color
+$purple: hsl(239, 90%, 65%);
+$purple-light: hsl(239, 90%, 85%);
+$purple-lighter: hsl(239, 90%, 95%);
+$purple-dark: hsl(239, 90%, 45%);
+
+$red: hsl(0, 84%, 65%);
+$red-dark: hsl(0, 84%, 45%);
+
+$yellow: hsl(45, 93%, 65%);
+$yellow-dark: hsl(45, 93%, 45%);
+
+$green: hsl(160, 84%, 65%);
+$green-dark: hsl(160, 84%, 45%);
+
+$grey: hsl(220, 9%, 45%);
+$grey-light: hsl(220, 9%, 95%);
+
+// Sizes
+$icon-m: 24px;
+$max-width: 1024px;
+$screen-s: 768px;
+$screen-l: 1024px;
+
+// Other
+$border-radius: 10px;
+$border-width: 2px;
+$border: $border-width solid var(--stroke);

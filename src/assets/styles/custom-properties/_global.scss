@@ -1,0 +1,7 @@
+@use "../variables" as *;
+
+:root {
+  --icon-size: #{$icon-m};
+  --border-radius: #{$border-radius};
+  --border: #{$border};
+}
