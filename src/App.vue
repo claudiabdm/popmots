@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import TheHeader from './components/TheHeader.vue';
 </script>
 
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/study">Study</RouterLink>
-      <RouterLink to="/Settings">Settings</RouterLink>
-    </nav>
-  </header>
-
-  <RouterView />
+  <div class="app">
+    <TheHeader />
+    <main class="main">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
-<style></style>
+<style lang="scss">
+body {
+  font-family: var(--font-family);
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 0.25fr 1fr;
+  min-height: 100vh;
+}
+
+.main {
+  padding: var(--space-l);
+}
+</style>
