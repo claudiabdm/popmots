@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import type { IconName } from '@/types';
+
 const props = defineProps<{
-	name: 'settings',
+	name: IconName,
 	size?: 'l',
 }>();
 </script>
