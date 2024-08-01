@@ -21,17 +21,14 @@ body {
 }
 
 .app {
-  display: grid;
-  grid-template-columns: 1fr;
-  min-height: 100vh;
-
-  @media screen and (min-width: $screen-s) {
-    grid-template-columns: 0.25fr 1fr;
-  }
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main {
   width: 100%;
   padding: var(--space-s-m);
+  overflow: auto;
 }
 </style>

@@ -16,6 +16,7 @@ import TheNavbar from './TheNavbar.vue';
     display: none;
 
     @media screen and (min-width: $screen-s) {
+        flex-basis: 25%;
         display: flex;
         flex-direction: column;
         font-size: var(--font-l);
