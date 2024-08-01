@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.0.19",
+    "chart.js": "^4.4.3",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },

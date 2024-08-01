@@ -25,10 +25,14 @@
     --space-3xs-2xs: clamp(0.3125rem, 0.2038rem + 0.5435vi, 0.625rem);
     /* Space 2xs-xs: 9px → 15px */
     --space-2xs-xs: clamp(0.5625rem, 0.4321rem + 0.6522vi, 0.9375rem);
+    /* Space 2xs-l: 9px → 40px */
+    --space-2xs-l: clamp(0.5625rem, -0.1114rem + 3.3696vw, 2.5rem);
     /* Space xs-s: 14px → 20px */
     --space-xs-s: clamp(0.875rem, 0.7446rem + 0.6522vi, 1.25rem);
     /* Space s-m: 18px → 30px */
     --space-s-m: clamp(1.125rem, 0.8641rem + 1.3043vi, 1.875rem);
+    /* Space s-l: 18px → 40px */
+    --space-s-l: clamp(1.125rem, 0.6467rem + 2.3913vw, 2.5rem);
     /* Space m-l: 27px → 40px */
     --space-m-l: clamp(1.6875rem, 1.4049rem + 1.413vi, 2.5rem);
     /* Space l-xl: 36px → 60px */

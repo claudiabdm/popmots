@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ForecastChart from '@/components/ForecastChart.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ProgressSummary from '@/components/ProgressSummary.vue';
 import SvgIcon from '@/components/SvgIcon.vue';
@@ -40,11 +41,11 @@ const summary = [
       />
 
       <ProgressSummary :summary="summary" />
-
     </article>
 
     <section>
       <h3 class="home__subtitle">7 days review forecast</h3>
+      <ForecastChart />
     </section>
 
     <section>
