@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IconName } from '@/types';
+import type { IconName } from '@/types/icon-names';
 import SvgIcon from './SvgIcon.vue';
 import { type RouterLink } from 'vue-router';
 export interface ButtonBaseProps {
