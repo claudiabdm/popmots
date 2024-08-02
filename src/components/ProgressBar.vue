@@ -36,7 +36,6 @@ withDefaults(defineProps<{
     align-items: center;
     height: 35px;
     width: 100%;
-    margin-top: var(--space-2xs);
     border: var(--border);
     border-color: var(--primary-light);
     border-radius: var(--border-radius);

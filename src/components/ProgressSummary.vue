@@ -37,7 +37,6 @@ defineProps<Props>();
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-items: center;
-  margin-top: var(--space-xs);
   border: var(--border);
   border-radius: var(--border-radius);
   width: 100%;

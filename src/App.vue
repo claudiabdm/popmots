@@ -22,13 +22,17 @@ body {
 
 .app {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+
+  @media screen and (min-width: $screen-s) {
+    height: 100vh;
+    overflow: hidden;
+  }
 }
 
 .main {
   width: 100%;
   padding: var(--space-s-m);
+  padding-bottom: var(--space-2xl);
   overflow: auto;
 }
 </style>

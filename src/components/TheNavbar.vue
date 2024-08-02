@@ -39,7 +39,7 @@ const links = useRouter().getRoutes();
         }
 
         &:hover:not(.nav__link--active) {
-            background-color: var(--secondary-light);
+            background-color: var(--secondary-lighter);
         }
 
         &--active,

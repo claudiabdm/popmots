@@ -25,7 +25,7 @@ onMounted(() => {
   if (canvas.value) {
     const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary')
     const primaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-light')
-    const secondaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-light')
+    const secondaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-lighter')
     const secondaryLightColorAlpha = getComputedStyle(document.documentElement).getPropertyValue('--secondary').replace(')', ', 0.8)')
 
     new ChartJS(canvas.value, {
@@ -111,7 +111,6 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-top: var(--space-2xs);
   padding: var(--space-s-l) var(--space-2xs-l);
   border: var(--border);
   border-radius: var(--border-radius);

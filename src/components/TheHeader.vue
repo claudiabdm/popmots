@@ -20,7 +20,7 @@ import TheNavbar from './TheNavbar.vue';
         display: flex;
         flex-direction: column;
         font-size: var(--font-l);
-        border: var(--border);
+        border-right: var(--border);
         padding: var(--space-m);
 
         &__title {
