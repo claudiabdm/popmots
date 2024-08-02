@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ButtonLink from '@/components/ButtonLink.vue';
 import ForecastChart from '@/components/ForecastChart.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ProgressSummary from '@/components/ProgressSummary.vue';
@@ -33,28 +34,37 @@ const summary = [
       </RouterLink>
     </div>
 
-    <article>
+
+    <article class="home__section">
       <h3 class="home__subtitle">Current session</h3>
       <ProgressBar
         :value-max="TOTAL_SESSION"
         :value-now="DONE_SESSION"
       />
-
       <ProgressSummary :summary="summary" />
     </article>
 
-    <section>
+    <ButtonLink
+      to="/study"
+      icon-name="study"
+      action="easy"
+    >
+      Go to study
+    </ButtonLink>
+
+    <article class="home__section">
       <h3 class="home__subtitle">7 days review forecast</h3>
       <ForecastChart />
-    </section>
+    </article>
 
-    <section>
+    <article class="home__section">
       <h3 class="home__subtitle">Total memorized</h3>
       <ProgressBar
         :value-max="TOTAL"
         :value-now="DONE_SESSION"
       />
-    </section>
+    </article>
+
   </section>
 
 
@@ -90,6 +100,12 @@ const summary = [
   &__subtitle {
     color: var(--secondary);
     font-size: var(--font-xl);
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
   }
 
 }

@@ -1,1 +1,1 @@
-export type IconName = 'settings'
+export type IconName = 'settings' | 'study' 
