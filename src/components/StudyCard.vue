@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import StudyCardFront from './StudyCardFront.vue';
 import StudyCardBack from './StudyCardBack.vue';
+import type { Card } from '@/types';
 
 interface Props {
-    name: string,
+    card: Card,
     isFlipped?: boolean
 }
 
@@ -14,8 +15,11 @@ defineProps<Props>();
     <div class="study-card-wrapper">
         <div
             :class="['study-card-container', { 'study-card-container--flipped': isFlipped }]">
-            <StudyCardFront name="Bonjour" />
-            <StudyCardBack name="Bonjour" />
+            <StudyCardFront :name="card.name" />
+            <StudyCardBack
+                :name="card.name"
+                :entries="card.entries"
+            />
         </div>
     </div>
 </template>

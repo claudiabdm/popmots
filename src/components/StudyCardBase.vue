@@ -12,7 +12,7 @@
 
 .study-card {
     position: absolute;
-    width: clamp($min-width, 100%, $max-width);
+    width: clamp($min-width, 100%, $screen-s);
     height: 100%;
     padding: var(--space-xs);
     border: var(--border);

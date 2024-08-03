@@ -5,12 +5,15 @@ import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import StudyCard from '@/components/StudyCard.vue';
 import { ref } from 'vue';
+import { useStore } from '@/data';
 
 const isFlipped = ref(false);
 
 function flipCard() {
   isFlipped.value = !isFlipped.value
 }
+
+const { currentCard } = useStore()
 
 </script>
 
@@ -25,7 +28,8 @@ function flipCard() {
     </ViewHeader>
 
     <StudyCard
-      name="Bonjour"
+      v-if="currentCard"
+      :card="currentCard"
       :is-flipped="isFlipped"
     />
 
@@ -38,7 +42,7 @@ function flipCard() {
         Show Answer
       </ButtonButton>
 
-      <TransitionGroup v-else>
+      <template v-else>
         <ButtonButton action="hard">
           Hard
         </ButtonButton>
@@ -48,7 +52,7 @@ function flipCard() {
         <ButtonButton action="easy">
           Easy
         </ButtonButton>
-      </TransitionGroup>
+      </template>
     </section>
   </ViewSection>
 </template>

@@ -53,7 +53,6 @@ const attrsAndClass = computed(() => {
 
 .button-wrapper {
     position: relative;
-    width: clamp($min-width, 100%, $max-width);
     margin: auto;
     cursor: pointer;
 

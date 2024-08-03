@@ -17,6 +17,8 @@
   "dependencies": {
     "@fontsource-variable/nunito": "^5.0.19",
     "chart.js": "^4.4.3",
+    "most-common-words-fr-dict-generator": "^1.0.2",
+    "ts-fsrs": "^4.1.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },

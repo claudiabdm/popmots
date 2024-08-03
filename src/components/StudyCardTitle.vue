@@ -8,5 +8,6 @@
 .study-card-title {
     color: var(--primary);
     font-size: var(--font-4);
+    text-transform: capitalize;
 }
 </style>

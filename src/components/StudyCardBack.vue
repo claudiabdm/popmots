@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import type { WordEntries } from '@/types';
 import ButtonButton from './ButtonButton.vue';
 import StudyCardBase from './StudyCardBase.vue';
 import StudyCardTitle from './StudyCardTitle.vue';
 
 interface Props {
     name: string
+    entries: WordEntries
 }
 
 defineProps<Props>();
@@ -24,36 +26,45 @@ defineProps<Props>();
                     aria-label="Listen to pronunciation"
                 />
             </dt>
-            <dd>
+            <dd
+                v-for="entry in entries"
+                :key="entry.word"
+            >
                 <section class="study-card-back__desc">
                     <h4 class="study-card-back__cat">
-                        noun
+                        {{ entry.category }}
+                        <span
+                            v-if="entry.head"
+                            class="study-card-back__head"
+                        >
+                            {{ entry.head.join(', ') }}
+                        </span>
                     </h4>
-                    <p class="study-card-back__def">
-                        greetings; hello (general salutation)
-                    </p>
-                    <p class="study-card-back__example">
-                        <q>Tu passeras le bonjour à ta mère!</q>
-                    </p>
-                    <p class="study-card-back__example">
-                        <q>You will say hello to your mother!</q>
-                    </p>
-                </section>
-            </dd>
-            <dd>
-                <section class="study-card-back__desc">
-                    <h4 class="study-card-back__cat">
-                        interjection
-                    </h4>
-                    <p class="study-card-back__def">
-                        good day; good morning
-                    </p>
-                    <p class="study-card-back__example">
-                        <q>Bonjour, mon ami !</q>
-                    </p>
-                    <p class="study-card-back__example">
-                        <q>Good morning, my friend!</q>
-                    </p>
+                    <ul>
+                        <li
+                            v-for="(sense, index) in entry.senses"
+                            :key="sense.glosses.join(', ')"
+                        >
+                            <p
+                                v-for="glossary in sense.glosses"
+                                :key="glossary"
+                                class="study-card-back__def"
+                            >
+                                <span class="study-card-back__index">{{ index +
+                                    1
+                                    }}.</span> {{ sense.glosses.join(', ') }}
+                            </p>
+                            <p
+                                v-for="ex in sense.examples"
+                                :key="ex.text"
+                                class="study-card-back__example"
+                            >
+                                FR: <q>{{ ex.text }}</q>
+                                <br />
+                                EN: <q>{{ ex.english }}</q>
+                            </p>
+                        </li>
+                    </ul>
                 </section>
             </dd>
         </dl>
@@ -71,7 +82,6 @@ defineProps<Props>();
 @use '../assets/styles/_variables' as *;
 
 .study-card-back {
-    width: max-content;
     padding: var(--space-m);
     transform: rotateY(180deg);
 
@@ -85,6 +95,7 @@ defineProps<Props>();
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: var(--space-m);
         margin-bottom: var(--space-m);
     }
 
@@ -98,11 +109,19 @@ defineProps<Props>();
     }
 
     &__cat {
-        font-size: var(--font--1);
+        color: var(--primary);
+    }
+
+    &__head {
         color: var(--primary-light);
+        font-size: var(--font--1);
+        font-style: italic;
+        font-weight: 300;
     }
 
     &__def {
+        display: flex;
+        gap: var(--space-2xs);
         margin-top: var(--space-2xs);
         margin-bottom: var(--space-2xs);
         color: var(--secondary-darker);
@@ -110,8 +129,11 @@ defineProps<Props>();
 
     &__example {
         font-size: var(--font--1);
-        font-style: italic;
         color: var(--secondary);
+    }
+
+    &__index {
+        color: var(--primary-light);
     }
 
 }
