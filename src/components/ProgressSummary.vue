@@ -50,7 +50,7 @@ defineProps<Props>();
     width: 100%;
     padding: var(--space-xs);
     color: var(--secondary);
-    font-size: var(--font-2xl);
+    font-size: var(--font-1);
 
     &:first-child {
       border-right: var(--border);
@@ -62,7 +62,7 @@ defineProps<Props>();
   }
 
   &__title {
-    font-size: var(--font-xs);
+    font-size: var(--font--1);
     text-transform: uppercase;
 
     &--reviewed {

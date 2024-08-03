@@ -1,1 +1,1 @@
-export type IconName = "settings" | "study" | "eye";
+export type IconName = "settings" | "study" | "eye" | "back" | "audio";

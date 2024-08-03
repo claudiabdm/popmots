@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // Color
 $purple: hsl(239, 90%, 65%);
 $purple-light: hsl(239, 90%, 85%);
@@ -20,13 +22,16 @@ $grey: hsl(220, 9%, 65%);
 $grey-light: hsl(220, 9%, 85%);
 $grey-lighter: hsl(220, 9%, 95%);
 $grey-dark: hsl(220, 9%, 45%);
+$grey-darker: hsl(220, 9%, 25%);
 
 // Sizes
 $icon-m: 24px;
 $icon-l: 38px;
-$max-width: 1024px;
+$screen-xs: 300px;
 $screen-s: 768px;
 $screen-l: 1024px;
+$max-width: math.div($screen-s, 2);
+$min-width: $screen-xs;
 
 // Other
 $border-radius: 10px;

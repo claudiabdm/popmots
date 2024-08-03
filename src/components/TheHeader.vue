@@ -19,11 +19,11 @@ import TheNavbar from './TheNavbar.vue';
         flex-basis: 25%;
         display: flex;
         flex-direction: column;
-        font-size: var(--font-l);
         border-right: var(--border);
         padding: var(--space-m);
 
         &__title {
+            font-size: var(--font-2);
             color: var(--primary);
             padding: 0 var(--space-xs);
         }

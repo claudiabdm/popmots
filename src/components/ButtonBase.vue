@@ -1,30 +1,43 @@
 <script lang="ts" setup>
 import type { IconName } from '@/types/icon-names';
-import SvgIcon from './SvgIcon.vue';
-import { type RouterLink } from 'vue-router';
+import Icon from './IconBase.vue';
+import { computed, useAttrs } from 'vue';
+
 export interface ButtonBaseProps {
-    component: 'button' | typeof RouterLink,
-    action?: 'primary' | 'hard' | 'good' | 'easy'
+    component: 'button' | 'RouterLink',
+    action?: 'primary' | 'hard' | 'good' | 'easy' | 'secondary'
     iconName?: IconName,
     disabled?: boolean
 }
 
+defineOptions({
+    inheritAttrs: false
+})
+
 withDefaults(defineProps<ButtonBaseProps>(), {})
+
+const attrs = useAttrs();
+
+const attrsAndClass = computed(() => {
+    const { class: classWrapper, ...rest } = attrs;
+    return { classWrapper, attrsWithoutClass: rest }
+})
 </script>
 
 <template>
     <div :class="[
         'button-wrapper',
         `button-wrapper--${action}`,
-        { 'button-wrapper--disabled': disabled }
+        { 'button-wrapper--disabled': disabled },
+        attrsAndClass.classWrapper
     ]">
         <component
             class="button"
-            v-bind="$attrs"
+            v-bind="attrsAndClass.attrsWithoutClass"
             :is="component"
             :disabled="disabled"
         >
-            <SvgIcon
+            <Icon
                 v-if="iconName"
                 :name="iconName"
                 color="#fff"
@@ -36,10 +49,11 @@ withDefaults(defineProps<ButtonBaseProps>(), {})
 
 
 <style lang="scss">
+@use '../assets/styles/_variables' as *;
+
 .button-wrapper {
     position: relative;
-    width: 100%;
-    max-width: 500px;
+    width: clamp($min-width, 100%, $max-width);
     margin: auto;
     cursor: pointer;
 
@@ -110,6 +124,20 @@ withDefaults(defineProps<ButtonBaseProps>(), {})
         }
     }
 
+    &--secondary {
+
+        &::after {
+            background-color: var(--purple);
+            border-color: var(--purple);
+        }
+
+
+        .button {
+            background-color: var(--purple-light);
+            border-color: var(--purple);
+        }
+    }
+
     &--disabled {
         cursor: not-allowed;
 
@@ -132,6 +160,7 @@ withDefaults(defineProps<ButtonBaseProps>(), {})
         }
 
     }
+
 }
 
 .button {
@@ -148,7 +177,7 @@ withDefaults(defineProps<ButtonBaseProps>(), {})
     padding: var(--space-2xs) var(--space-xs);
     color: #fff;
     background-color: var(--primary);
-    font-size: var(--font-xl);
+    font-size: var(--font-1);
     font-weight: 700;
     text-decoration: none;
     z-index: 1;

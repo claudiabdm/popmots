@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { IconName } from '@/types';
+import type { IconName } from '@/types/icon-names';
 
 const props = defineProps<{
 	name: IconName,
@@ -16,12 +16,12 @@ const props = defineProps<{
 
 <style lang="scss">
 svg {
-	width: var(--font-2xl);
-	height: var(--font-2xl);
+	width: var(--font-2);
+	height: var(--font-2);
 
 	&.svg--l {
-		width: var(--font-5xl);
-		height: var(--font-5xl);
+		width: var(--font-5);
+		height: var(--font-5);
 	}
 }
 </style>

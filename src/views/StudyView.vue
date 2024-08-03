@@ -1,15 +1,78 @@
+<script setup lang="ts">
+import ButtonButton from '@/components/ButtonButton.vue';
+import ProgressBar from '@/components/ProgressBar.vue';
+import ViewSection from '@/components/ViewSection.vue';
+import ViewHeader from '@/components/ViewHeader.vue';
+import StudyCard from '@/components/StudyCard.vue';
+import { ref } from 'vue';
+
+const isFlipped = ref(false);
+
+function flipCard() {
+  isFlipped.value = !isFlipped.value
+}
+
+</script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <ViewSection class="study">
+    <ViewHeader
+      with-back-btn
+      class="study__header"
+    >
+      <template #title><span class="sr-only">Study</span></template>
+      <ProgressBar class="study__progress" />
+    </ViewHeader>
+
+    <StudyCard
+      name="Bonjour"
+      :is-flipped="isFlipped"
+    />
+
+    <section class="study__buttons">
+      <ButtonButton
+        v-if="!isFlipped"
+        icon-name="eye"
+        @click="flipCard"
+      >
+        Show Answer
+      </ButtonButton>
+
+      <TransitionGroup v-else>
+        <ButtonButton action="hard">
+          Hard
+        </ButtonButton>
+        <ButtonButton action="good">
+          Good
+        </ButtonButton>
+        <ButtonButton action="easy">
+          Easy
+        </ButtonButton>
+      </TransitionGroup>
+    </section>
+  </ViewSection>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
+<style lang="scss">
+@use '../assets/styles/_variables' as *;
+
+.study {
+  &__buttons {
+    width: 100%;
+    width: clamp($min-width, 100%, $max-width);
+    margin: auto;
     display: flex;
-    align-items: center;
+    gap: var(--space-xs);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 </style>

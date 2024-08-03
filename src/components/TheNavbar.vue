@@ -29,7 +29,7 @@ const links = useRouter().getRoutes();
         border-radius: var(--border-radius);
         padding: var(--space-2xs) var(--space-xs);
         color: var(--secondary);
-        font-size: var(--font-base);
+        font-size: var(--font-0);
         font-weight: 700;
         text-transform: uppercase;
         text-decoration: none;

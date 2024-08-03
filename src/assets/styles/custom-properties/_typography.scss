@@ -1,4 +1,5 @@
 /* @link https://utopia.fyi/clamp/calculator?a=320,1024,12—16|16—16|16—18|32—72|24—30|28—40|32—56&p=font */
+/* @link https://utopia.fyi/type/calculator?c=320,16,1.2,1024,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
 
 /* nunito-latin-wght-normal */
 @font-face {
@@ -14,6 +15,25 @@
 }
 
 :root {
+  /* Step -2: 11.1111px → 12.8px */
+  --font--2: clamp(0.6944rem, 0.6465rem + 0.2399vw, 0.8rem);
+  /* Step -1: 13.3333px → 16px */
+  --font--1: clamp(0.8333rem, 0.7576rem + 0.3788vw, 1rem);
+  /* Step 0: 16px → 20px */
+  --font-0: clamp(1rem, 0.8864rem + 0.5682vw, 1.25rem);
+  /* Step 1: 19.2px → 25px */
+  --font-1: clamp(1.2rem, 1.0352rem + 0.8239vw, 1.5625rem);
+  /* Step 2: 23.04px → 31.25px */
+  --font-2: clamp(1.44rem, 1.2068rem + 1.1662vw, 1.9531rem);
+  /* Step 3: 27.648px → 39.0625px */
+  --font-3: clamp(1.728rem, 1.4037rem + 1.6214vw, 2.4414rem);
+  /* Step 4: 33.1776px → 48.8281px */
+  --font-4: clamp(2.0736rem, 1.629rem + 2.2231vw, 3.0518rem);
+  /* Step 5: 39.8131px → 61.0352px */
+  --font-5: clamp(2.4883rem, 1.8854rem + 3.0145vw, 3.8147rem);
+}
+
+:root {
   --font-xs: 0.75rem;
   --font-s: 0.875rem;
   --font-base: 1rem;
@@ -22,10 +42,12 @@
   --font-2xl: clamp(1.25rem, 1.1364rem + 0.5682vi, 1.5rem);
   --font-3xl: clamp(1.5rem, 1.3295rem + 0.8523vi, 1.875rem);
   --font-4xl: clamp(1.75rem, 1.4091rem + 1.7045vi, 2.5rem);
-  --font-5xl: clamp(2rem, 1.3182rem + 3.4091vi, 3.5rem);
-  --font-6xl: clamp(2rem, 0.8636rem + 5.6818vi, 4.5rem);
+  --font-5xl: clamp(2.5rem, 1.3182rem + 3.4091vi, 3.5rem);
+  --font-6xl: clamp(3.5rem, 0.8636rem + 5.6818vi, 4.5rem);
 
   --font-12-16: clamp(0.75rem, 0.6364rem + 0.5682vi, 1rem);
+
+  --font-48: 3rem;
 
   --font-family: "Nunito Variable", sans-serif;
 }

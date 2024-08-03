@@ -16,15 +16,15 @@ import TheHeader from './components/TheHeader.vue';
 @use './assets/styles/_variables' as *;
 
 body {
-  font-size: var(--font-base);
+  font-size: var(--font-0);
   font-family: var(--font-family);
 }
 
 .app {
   display: flex;
+  min-height: 100vh;
 
   @media screen and (min-width: $screen-s) {
-    height: 100vh;
     overflow: hidden;
   }
 }
@@ -32,7 +32,12 @@ body {
 .main {
   width: 100%;
   padding: var(--space-s-m);
-  padding-bottom: var(--space-2xl);
-  overflow: auto;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media screen and (min-width: $screen-s) {
+    padding-bottom: var(--space-2xl);
+  }
 }
 </style>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { RouterLinkProps } from 'vue-router';
 import { default as ButtonBase, type ButtonBaseProps } from './ButtonBase.vue';
-import { RouterLink } from 'vue-router';
 
 interface Props extends Omit<ButtonBaseProps, 'component'>, RouterLinkProps { }
 
@@ -13,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
     <ButtonBase
-        :component="RouterLink"
+        component="RouterLink"
         :to="to"
         :action="action"
         :icon-name="iconName"

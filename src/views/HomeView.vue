@@ -3,7 +3,9 @@ import ButtonLink from '@/components/ButtonLink.vue';
 import ForecastChart from '@/components/ForecastChart.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import ProgressSummary from '@/components/ProgressSummary.vue';
-import SvgIcon from '@/components/SvgIcon.vue';
+import SvgIcon from '@/components/IconBase.vue';
+import ViewSection from '@/components/ViewSection.vue';
+import ViewHeader from '@/components/ViewHeader.vue';
 
 
 const DONE_SESSION = 15
@@ -19,9 +21,9 @@ const summary = [
 </script>
 
 <template>
-  <section class="home">
-    <div class="home__title-container">
-      <h2 class="home__title">Your progress</h2>
+  <ViewSection>
+    <ViewHeader>
+      <template #title>Your progress</template>
       <RouterLink
         to="/settings"
         class="home__link-btn"
@@ -32,7 +34,7 @@ const summary = [
           color="var(--secondary)"
         />
       </RouterLink>
-    </div>
+    </ViewHeader>
 
 
     <article class="home__section">
@@ -65,7 +67,7 @@ const summary = [
       />
     </article>
 
-  </section>
+  </ViewSection>
 
 
 </template>
@@ -74,20 +76,6 @@ const summary = [
 @use '../assets/styles/_variables' as *;
 
 .home {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-l);
-
-  &__title-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__title {
-    color: var(--primary);
-    font-size: var(--font-4xl);
-  }
 
   &__link-btn {
     display: flex;
@@ -99,7 +87,7 @@ const summary = [
 
   &__subtitle {
     color: var(--secondary);
-    font-size: var(--font-xl);
+    font-size: var(--font-0);
   }
 
   &__section {
