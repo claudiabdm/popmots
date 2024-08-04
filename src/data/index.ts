@@ -1,9 +1,11 @@
 import { dictionary } from 'most-common-words-fr-dict-generator';
 import { reactive, toRefs } from 'vue';
 
+const randomNum = Math.floor(Math.random() * dictionary.size);
+const randomWord = [...dictionary.keys()][randomNum];
 const store = reactive({
     dictionary,
-    currentCard: { name: 'être', entries: dictionary.get('être')! }
+    currentCard: { name: randomWord, entries: dictionary.get(randomWord)! }
 })
 
 export function useStore() {

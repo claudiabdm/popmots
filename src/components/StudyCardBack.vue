@@ -3,14 +3,37 @@ import type { WordEntries } from '@/types';
 import ButtonButton from './ButtonButton.vue';
 import StudyCardBase from './StudyCardBase.vue';
 import StudyCardTitle from './StudyCardTitle.vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 interface Props {
     name: string
     entries: WordEntries
 }
 
-defineProps<Props>();
 
+const props = defineProps<Props>();
+
+const paused = ref(false);
+const pronunAudio = computed(() => props.entries[0].pronunciation_mp3 ? new Audio(props.entries[0].pronunciation_mp3) : undefined);
+
+onMounted(() => {
+    pronunAudio.value?.load()
+    pronunAudio.value?.addEventListener('play', handlePlay);
+    pronunAudio.value?.addEventListener('pause', handlePlay);
+})
+
+onUnmounted(() => {
+    pronunAudio.value?.removeEventListener('play', handlePlay);
+    pronunAudio.value?.removeEventListener('pause', handlePlay);
+})
+
+function listenPronunciation() {
+    pronunAudio.value?.play()
+}
+
+function handlePlay() {
+    paused.value = !paused.value
+}
 </script>
 <template>
     <StudyCardBase class="study-card-back">
@@ -18,17 +41,22 @@ defineProps<Props>();
             <dt class="study-card-back__term">
                 <StudyCardTitle>
                     {{ name }}
+                    <span class="study-card-back__ipa">
+                        {{ entries[0].ipa }}
+                    </span>
                 </StudyCardTitle>
                 <ButtonButton
-                    class="study-card-back__btn"
-                    icon-name="audio"
+                    :class="['study-card-back__btn', { 'study-card-back__btn--playing': paused }]"
+                    :icon-name="paused ? 'paused' : 'play'"
                     action="secondary"
                     aria-label="Listen to pronunciation"
+                    @click="listenPronunciation"
+                    :disabled="!pronunAudio"
                 />
             </dt>
             <dd
                 v-for="entry in entries"
-                :key="entry.word"
+                :key="entry.rank"
             >
                 <section class="study-card-back__desc">
                     <h4 class="study-card-back__cat">
@@ -40,41 +68,37 @@ defineProps<Props>();
                             {{ entry.head.join(', ') }}
                         </span>
                     </h4>
-                    <ul>
+                    <ul class="study-card-back__senses">
                         <li
+                            class="study-card-back__sense"
                             v-for="(sense, index) in entry.senses"
-                            :key="sense.glosses.join(', ')"
+                            :key="(sense as any).id"
                         >
-                            <p
-                                v-for="glossary in sense.glosses"
-                                :key="glossary"
-                                class="study-card-back__def"
-                            >
-                                <span class="study-card-back__index">{{ index +
-                                    1
-                                    }}.</span> {{ sense.glosses.join(', ') }}
+                            <p class="study-card-back__def">
+                                <span class="study-card-back__index">
+                                    {{ index + 1 }}.
+                                </span>
+                                {{ sense.glosses.join(', ') }}
                             </p>
-                            <p
-                                v-for="ex in sense.examples"
-                                :key="ex.text"
-                                class="study-card-back__example"
+                            <template
+                                v-for="(ex, index) in sense.examples?.slice(0, 3)"
+                                :key="ex.text + index"
                             >
-                                FR: <q>{{ ex.text }}</q>
-                                <br />
-                                EN: <q>{{ ex.english }}</q>
-                            </p>
+                                <p
+                                    v-if="ex.text.length < 100 && ex.english"
+                                    class="study-card-back__example"
+                                >
+                                    FR: {{ ex.text }}
+                                    <br />
+                                    EN: {{ ex.english }}
+                                </p>
+                            </template>
+
                         </li>
                     </ul>
                 </section>
             </dd>
         </dl>
-
-        <!-- <ButtonButton
-            action="secondary"
-            class="study-card-back__btn"
-        >
-            View more
-        </ButtonButton> -->
     </StudyCardBase>
 </template>
 
@@ -99,40 +123,87 @@ defineProps<Props>();
         margin-bottom: var(--space-m);
     }
 
+    &__ipa {
+        color: var(--primary-light);
+        font-size: var(--font-0);
+        font-family: monospace;
+        font-weight: 300;
+        text-transform: none;
+    }
+
     &__btn {
         margin: 0;
         width: max-content;
+
+        &--playing {
+
+            &:active .button,
+            &:hover .button,
+            .button {
+                transform: translate3d(0, 4px, 0);
+            }
+
+            svg {
+
+                path {
+                    color: var(--primary);
+                    stroke: aqua;
+                    stroke-width: 3;
+                }
+            }
+        }
     }
 
     &__desc {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2xs);
         font-size: var(--font-0);
     }
 
     &__cat {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-2xs);
+        text-wrap: auto;
         color: var(--primary);
     }
 
+    &__senses {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs)
+    }
+
+    &__sense {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2xs)
+    }
+
     &__head {
+        width: 100%;
         color: var(--primary-light);
         font-size: var(--font--1);
         font-style: italic;
-        font-weight: 300;
+        font-weight: 400;
     }
 
     &__def {
         display: flex;
         gap: var(--space-2xs);
-        margin-top: var(--space-2xs);
-        margin-bottom: var(--space-2xs);
         color: var(--secondary-darker);
     }
 
     &__example {
+        padding-left: var(--space-l);
         font-size: var(--font--1);
         color: var(--secondary);
     }
 
     &__index {
+        text-align: right;
+        width: var(--space-m);
         color: var(--primary-light);
     }
 
