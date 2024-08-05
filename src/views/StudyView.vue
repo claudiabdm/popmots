@@ -35,6 +35,7 @@ const { currentCard } = useStore()
 
     <section class="study__buttons">
       <ButtonButton
+        class="study__button"
         v-if="!isFlipped"
         icon-name="eye"
         @click="flipCard"
@@ -43,13 +44,22 @@ const { currentCard } = useStore()
       </ButtonButton>
 
       <template v-else>
-        <ButtonButton action="hard">
+        <ButtonButton
+          class="study__button"
+          action="hard"
+        >
           Hard
         </ButtonButton>
-        <ButtonButton action="good">
+        <ButtonButton
+          class="study__button"
+          action="good"
+        >
           Good
         </ButtonButton>
-        <ButtonButton action="easy">
+        <ButtonButton
+          class="study__button"
+          action="easy"
+        >
           Easy
         </ButtonButton>
       </template>
@@ -60,13 +70,23 @@ const { currentCard } = useStore()
 <style lang="scss">
 @use '../assets/styles/_variables' as *;
 
+
 .study {
-  &__buttons {
+  display: grid;
+  grid-template-rows: var(--header-height) 1fr var(--footer-height);
+
+  &__btn {
     width: 100%;
-    width: clamp($min-width, 100%, $max-width);
-    margin: auto;
+  }
+
+  &__buttons {
     display: flex;
+    height: 50px;
+    width: clamp($min-width, 100%, $max-width);
+    margin: 0 auto;
     gap: var(--space-xs);
+
+
   }
 }
 

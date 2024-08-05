@@ -22,22 +22,18 @@ body {
 
 .app {
   display: flex;
-  min-height: 100vh;
-
-  @media screen and (min-width: $screen-s) {
-    overflow: hidden;
-  }
+  overflow: hidden;
 }
 
 .main {
   width: 100%;
+  height: calc(100vh - var(--header-height) - var(--footer-height) + 1px);
   padding: var(--space-s-m);
-
   overflow-y: auto;
   overflow-x: hidden;
 
   @media screen and (min-width: $screen-s) {
-    padding-bottom: var(--space-2xl);
+    height: 100vh;
   }
 }
 </style>

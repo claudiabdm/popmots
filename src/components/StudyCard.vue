@@ -30,15 +30,13 @@ defineProps<Props>();
 
 .study-card-wrapper {
     position: relative;
-    flex-grow: 1;
     perspective: 1000px;
 }
 
 .study-card-container {
-    position: absolute;
-    inset: 0;
     display: flex;
     justify-content: center;
+    height: 100%;
     transition: transform 0.25s;
     transform-style: preserve-3d;
 

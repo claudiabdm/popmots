@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { IconName } from '@/types/icon-names';
 import Icon from './IconBase.vue';
-import { computed, useAttrs } from 'vue';
+import { computed, ref, useAttrs } from 'vue';
 
 export interface ButtonBaseProps {
     component: 'button' | 'RouterLink',
@@ -16,21 +16,37 @@ defineOptions({
 
 withDefaults(defineProps<ButtonBaseProps>(), {})
 
+const isTouched = ref(false);
+
 const attrs = useAttrs();
 
 const attrsAndClass = computed(() => {
     const { class: classWrapper, ...rest } = attrs;
     return { classWrapper, attrsWithoutClass: rest }
 })
+
+function buttonPressed() {
+    isTouched.value = true;
+}
+
+function buttonReleased() {
+    isTouched.value = false;
+}
 </script>
 
+
 <template>
-    <div :class="[
-        'button-wrapper',
-        `button-wrapper--${action}`,
-        { 'button-wrapper--disabled': disabled },
-        attrsAndClass.classWrapper
-    ]">
+    <div
+        :class="[
+            'button-wrapper',
+            `button-wrapper--${action}`,
+            { 'button-wrapper--disabled': disabled },
+            { 'button-wrapper--is-touched': isTouched },
+            attrsAndClass.classWrapper
+        ]"
+        @touchstart="buttonPressed"
+        @touchend="buttonReleased"
+    >
         <component
             class="button"
             v-bind="attrsAndClass.attrsWithoutClass"
@@ -53,6 +69,7 @@ const attrsAndClass = computed(() => {
 
 .button-wrapper {
     position: relative;
+    width: clamp($min-width, 100%, $max-width);
     margin: auto;
     cursor: pointer;
 
@@ -69,7 +86,8 @@ const attrsAndClass = computed(() => {
         background-color: var(--primary-dark);
     }
 
-    &:hover {
+    &:hover,
+    &--is-touched {
         .button {
             transform: translate3d(0, 2px, 0);
         }
@@ -179,6 +197,8 @@ const attrsAndClass = computed(() => {
     font-size: var(--font-1);
     font-weight: 700;
     text-decoration: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
     z-index: 1;
 }
 </style>
