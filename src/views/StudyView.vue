@@ -73,7 +73,8 @@ const { currentCard } = useStore()
 
 .study {
   display: grid;
-  grid-template-rows: var(--header-height) 1fr var(--footer-height);
+  grid-template-rows: max-content 1fr var(--footer-height);
+  overflow: hidden;
 
   &__btn {
     width: 100%;

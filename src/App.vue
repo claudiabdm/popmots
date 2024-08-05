@@ -27,13 +27,13 @@ body {
 
 .main {
   width: 100%;
-  height: calc(100vh - var(--header-height) - var(--footer-height) + 1px);
-  padding: var(--space-s-m);
+  height: 100vh;
+  padding: var(--space-s-m) var(--space-s-m) calc(var(--footer-height) * 2 + var(--space-s-m));
   overflow-y: auto;
   overflow-x: hidden;
 
   @media screen and (min-width: $screen-s) {
-    height: 100vh;
+    padding-bottom: var(--footer-height);
   }
 }
 </style>

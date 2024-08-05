@@ -1,4 +1,4 @@
-@use "./variables";
+@use "./variables" as *;
 @use "./custom-properties/global";
 @use "./custom-properties/typography";
 @use "./custom-properties/space";
@@ -15,4 +15,27 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+.sr-only-screen-only-s-sreen {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    @media screen and (min-width: $screen-s) {
+        position: initial;
+        width: initial;
+        height: initial;
+        padding: initial;
+        margin: initial;
+        overflow: initial;
+        clip: initial;
+        white-space: initial;
+        border-width: initial;
+    }
 }
