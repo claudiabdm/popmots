@@ -56,7 +56,7 @@ function handlePlay() {
             </dt>
             <dd
                 v-for="entry in entries"
-                :key="entry.rank"
+                :key="(entry.senses[0] as any).id + 'entry'"
             >
                 <section class="study-card-back__desc">
                     <h4 class="study-card-back__cat">
@@ -202,6 +202,7 @@ function handlePlay() {
     }
 
     &__index {
+        flex-shrink: 0;
         text-align: right;
         width: var(--space-m);
         color: var(--primary-light);
