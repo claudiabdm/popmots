@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import ButtonButton from '@/components/ButtonButton.vue';
-import ProgressBar from '@/components/ProgressBar.vue';
+import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import StudyCard from '@/components/StudyCard.vue';
-import { ref } from 'vue';
+import StudyRatingButtons from '@/components/StudyRatingButtons.vue';
+import { ref, watch } from 'vue';
 import { useStore } from '@/data';
 
+const { currentCard } = useStore()
+
 const isFlipped = ref(false);
+
+watch(currentCard, () => {
+  isFlipped.value = false
+})
 
 function flipCard() {
   isFlipped.value = !isFlipped.value
 }
-
-const { currentCard } = useStore()
 
 </script>
 
@@ -24,14 +29,21 @@ const { currentCard } = useStore()
       class="study__header"
     >
       <template #title><span class="sr-only">Study</span></template>
-      <ProgressBar class="study__progress" />
+      <ProgressBarCurrent class="study__progress" />
     </ViewHeader>
 
-    <StudyCard
+    <div
       v-if="currentCard"
-      :card="currentCard"
-      :is-flipped="isFlipped"
-    />
+      class="study__cards"
+    >
+      <Transition>
+        <StudyCard
+          :key="currentCard?.name"
+          :card="currentCard"
+          :is-flipped="isFlipped"
+        />
+      </Transition>
+    </div>
 
     <section class="study__buttons">
       <ButtonButton
@@ -44,24 +56,7 @@ const { currentCard } = useStore()
       </ButtonButton>
 
       <template v-else>
-        <ButtonButton
-          class="study__button"
-          action="hard"
-        >
-          Hard
-        </ButtonButton>
-        <ButtonButton
-          class="study__button"
-          action="good"
-        >
-          Good
-        </ButtonButton>
-        <ButtonButton
-          class="study__button"
-          action="easy"
-        >
-          Easy
-        </ButtonButton>
+        <StudyRatingButtons />
       </template>
     </section>
   </ViewSection>
@@ -75,6 +70,15 @@ const { currentCard } = useStore()
   display: grid;
   grid-template-rows: max-content 1fr var(--footer-height);
   overflow: hidden;
+
+  &__cards {
+    position: relative;
+
+    &>* {
+      position: absolute;
+      inset: 0;
+    }
+  }
 
   &__btn {
     width: 100%;
@@ -99,5 +103,24 @@ const { currentCard } = useStore()
   100% {
     opacity: 1;
   }
+}
+
+.v-enter-active,
+.v-leave-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.15s 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.v-enter-from {
+  opacity: 0;
+  transform: translate3d(100%, 0, 0);
+}
+
+.v-leave-to {
+  opacity: 0;
+  transform: translate3d(-100%, 0, 0);
 }
 </style>

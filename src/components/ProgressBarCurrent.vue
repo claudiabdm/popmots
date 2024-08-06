@@ -1,32 +1,19 @@
 <script lang="ts" setup>
+import ProgressBarBase from './ProgressBarBase.vue';
+import { useStore } from '@/data';
+import { computed } from 'vue';
 
-withDefaults(defineProps<{
-    valueNow?: number
-    valueMin?: number
-    valueMax?: number
-}>(), {
-    valueNow: 0,
-    valueMin: 0,
-    valueMax: 100
-})
+const { dueCards, initialTotal } = useStore();
 
+const valueNow = computed(() => Math.min(initialTotal.value - dueCards.value.length, initialTotal.value));
+const valueMax = computed(() => initialTotal.value);
 </script>
 <template>
-    <div
-        class="progress-bar"
-        role="progressbar"
-        :aria-valuemax="valueMax"
-        :aria-valuemin="valueMin"
-        :aria-valuenow="valueNow"
-        aria-label="Progress"
-        :style="{ '--progress-session': valueNow / valueMax * 100 + '%' }"
-    >
-        <span class="progress-bar__text">
-            {{ valueNow }} / {{ valueMax }}
-        </span>
-    </div>
+    <ProgressBarBase
+        :value-now="valueNow"
+        :value-max="valueMax"
+    />
 </template>
-
 
 <style lang="scss" scoped>
 .progress-bar {

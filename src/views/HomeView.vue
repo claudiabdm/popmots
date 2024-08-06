@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import ButtonLink from '@/components/ButtonLink.vue';
-import ForecastChart from '@/components/ForecastChart.vue';
-import ProgressBar from '@/components/ProgressBar.vue';
-import ProgressSummary from '@/components/ProgressSummary.vue';
-import SvgIcon from '@/components/IconBase.vue';
 import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
-
-
-const DONE_SESSION = 15
-const TOTAL_SESSION = 23
-const TOTAL = 10000
-
-const summary = [
-  { type: 'reviewed' as const, valueNow: 10, valueMax: 13 },
-  { type: 'learning' as const, valueNow: 3, valueMax: 7 },
-  { type: 'new' as const, valueNow: 2, valueMax: 3 }
-]
-
+import SvgIcon from '@/components/IconBase.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
+import ForecastChart from '@/components/ForecastChart.vue';
+import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
+import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
+import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
+import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
 </script>
 
 <template>
@@ -39,20 +29,17 @@ const summary = [
 
     <article class="home__section">
       <h3 class="home__subtitle">Current session</h3>
-      <ProgressBar
-        :value-max="TOTAL_SESSION"
-        :value-now="DONE_SESSION"
-      />
-      <ProgressSummary :summary="summary" />
+      <ProgressBarCurrent class="study__progress" />
+      <ProgressSummaryCurrent />
+      <ButtonLink
+        to="/study"
+        icon-name="study"
+        action="easy"
+      >
+        Go to study
+      </ButtonLink>
     </article>
 
-    <ButtonLink
-      to="/study"
-      icon-name="study"
-      action="easy"
-    >
-      Go to study
-    </ButtonLink>
 
     <article class="home__section">
       <h3 class="home__subtitle">7 days review forecast</h3>
@@ -61,10 +48,8 @@ const summary = [
 
     <article class="home__section">
       <h3 class="home__subtitle">Total memorized</h3>
-      <ProgressBar
-        :value-max="TOTAL"
-        :value-now="DONE_SESSION"
-      />
+      <ProgressBarTotal />
+      <ProgressSummaryTotal />
     </article>
 
   </ViewSection>

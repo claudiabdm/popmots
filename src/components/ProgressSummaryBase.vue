@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-interface Props {
-  summary: Array<
-    {
-      valueNow: number
-      valueMax: number
-      type: 'reviewed' | 'learning' | 'new'
-    }
-  >
+import type { State } from 'ts-fsrs';
 
-}
-defineProps<Props>();
+defineProps<{
+  summary: {
+    valueNow: number;
+    type: State,
+    text: string
+  }[];
+}>();
+
 
 </script>
 <template>
@@ -20,12 +19,12 @@ defineProps<Props>();
       class="progress-summary__total"
     >
       <span>
-        {{ `${total.valueNow} / ${total.valueMax}` }}
+        {{ total.valueNow }}
       </span>
       <h4
         :class="['progress-summary__title', `progress-summary__title--${total.type}`]"
       >
-        {{ total.type }}
+        {{ total.text }}
       </h4>
     </article>
   </div>
@@ -35,7 +34,9 @@ defineProps<Props>();
 <style lang="scss">
 .progress-summary {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  align-content: center;
   justify-items: center;
   border: var(--border);
   border-radius: var(--border-radius);
@@ -48,33 +49,33 @@ defineProps<Props>();
     align-items: center;
     gap: var(--space-3xs);
     width: 100%;
-    padding: var(--space-xs);
+    padding: var(--space-xs) var(--space-2xs);
     color: var(--secondary);
     font-size: var(--font-1);
 
-    &:first-child {
-      border-right: var(--border);
-    }
-
-    &:last-child {
+    &:not(:first-child) {
       border-left: var(--border);
     }
   }
 
   &__title {
-    font-size: var(--font--1);
+    font-size: var(--font--2);
     text-transform: uppercase;
 
-    &--reviewed {
-      color: var(--green-dark);
+    &--0 {
+      color: var(--yellow-dark);
     }
 
-    &--learning {
+    &--1 {
       color: var(--red-dark);
     }
 
-    &--new {
-      color: var(--yellow-dark);
+    &--2 {
+      color: var(--green-dark);
+    }
+
+    &--3 {
+      color: var(--purple-dark);
     }
   }
 
