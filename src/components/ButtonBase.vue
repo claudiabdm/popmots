@@ -70,6 +70,7 @@ function buttonReleased() {
 .button-wrapper {
     position: relative;
     width: clamp($min-width, 100%, $max-width);
+    height: 100%;
     margin: auto;
     cursor: pointer;
 
@@ -187,6 +188,7 @@ function buttonReleased() {
     align-items: center;
     gap: var(--space-2xs);
     width: 100%;
+    height: 100%;
     margin: auto;
     border: var(--border);
     border-color: var(--primary-dark);
