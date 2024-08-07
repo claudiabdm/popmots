@@ -5,6 +5,8 @@ import type { Store } from '@/types';
 
 const params = generatorParameters({
     enable_short_term: true,
+    enable_fuzz: true,
+    maximum_interval: 0.8
 });
 const f = fsrs(params);
 
