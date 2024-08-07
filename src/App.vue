@@ -38,7 +38,7 @@ body {
 .main {
   width: 100%;
   height: 100vh;
-  padding: var(--space-s-m) 0 calc(var(--footer-height) * 2 + var(--space-s-m));
+  padding: 0 0 calc(var(--footer-height) * 2 + var(--space-s-m));
   overflow-y: auto;
   overflow-x: hidden;
 
