@@ -25,10 +25,11 @@ function flipCard() {
 <template>
   <ViewSection class="study">
     <ViewHeader
-      with-back-btn
       class="study__header"
+      with-back-btn
+      sr-only-title
     >
-      <template #title><span class="sr-only">Study</span></template>
+      <template #title>Study</template>
       <ProgressBarCurrent class="study__progress" />
     </ViewHeader>
 
@@ -116,7 +117,7 @@ function flipCard() {
 
 .v-enter-from {
   opacity: 0;
-  transform: translate3d(100%, 0, 0);
+  transform: translate3d(200%, 0, 0);
 }
 
 .v-leave-to {
