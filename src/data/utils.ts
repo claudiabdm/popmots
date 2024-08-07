@@ -1,6 +1,7 @@
 import type { Card, ScheduleCard, FSRSCard } from "@/types";
 import { dictionary } from "most-common-words-fr-dict-generator";
 import { createEmptyCard, State } from "ts-fsrs";
+import { DEFAULT_NEW_CARDS_PER_DAY } from ".";
 
 export function massageCard(card: FSRSCard): ScheduleCard {
     const { elapsed_days, scheduled_days, last_review, ...rest } = card
@@ -42,7 +43,7 @@ export function updateLocalCards(totalCards: Card[]) {
     localStorage.setItem('Cards', JSON.stringify(totalCards));
 }
 
-export function createAllCards(cardsPerDay = 20) {
+export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     const newCards: Card[] = [];
     const dayInMilliseconds = 24 * 60 * 60 * 1000;
     const now = new Date();

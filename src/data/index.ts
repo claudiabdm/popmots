@@ -3,6 +3,8 @@ import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
 import { filterCardsByState, loadLocalCards, massageCard, sameDay, unmassageCard, updateLocalCards } from './utils';
 import type { Store } from '@/types';
 
+export const DEFAULT_NEW_CARDS_PER_DAY = 20;
+
 const params = generatorParameters({
     enable_short_term: true,
     enable_fuzz: true,
