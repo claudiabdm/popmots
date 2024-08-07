@@ -25,7 +25,6 @@ function flipCard() {
 <template>
   <ViewSection class="study">
     <ViewHeader
-      class="study__header"
       with-back-btn
       sr-only-title
     >

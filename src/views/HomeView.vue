@@ -11,7 +11,7 @@ import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
 </script>
 
 <template>
-  <ViewSection>
+  <ViewSection class="home">
     <ViewHeader>
       <template #title>Your progress</template>
       <RouterLink
@@ -61,6 +61,8 @@ import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
 @use '../assets/styles/_variables' as *;
 
 .home {
+  width: clamp($min-width, 100%, $screen-s);
+  margin: 0 auto;
 
   &__link-btn {
     display: flex;

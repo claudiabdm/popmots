@@ -36,6 +36,7 @@ withDefaults(defineProps<Props>(), {
     </div>
 </template>
 <style lang="scss">
+@use '../assets/styles/_variables' as *;
 $width-back-btn: 48px;
 
 .view-header {
@@ -46,6 +47,8 @@ $width-back-btn: 48px;
     gap: var(--space-xs);
     padding-top: var(--space-s);
     height: calc($width-back-btn + var(--space-s));
+    width: clamp($min-width, 100%, $screen-s);
+    margin: 0 auto;
 
     &--with-back-btn {
         .view-header__content {
