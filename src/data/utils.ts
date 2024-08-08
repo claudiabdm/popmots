@@ -51,17 +51,17 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 
 export function loadLocalStore() {
     const settings = loadLocalSettings();
-    const totalCards = loadLocalCards();
+    const totalCards = loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
     return { settings, totalCards };
 }
 
-function loadLocalCards(): Store['totalCards'] {
+function loadLocalCards(settings?: Store['settings']): Store['totalCards'] {
     const localCards = localStorage.getItem('totalCards');
     const localCardsParsed: Store['totalCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
     if (localCardsParsed) {
-        return localCardsParsed;
+        return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
     } else {
-        const allCards = createAllCards();
+        const allCards = createAllCards(settings?.newCardsPerDay);
         localStorage.setItem('totalCards', JSON.stringify(allCards));
         return allCards;
     }
