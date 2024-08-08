@@ -1,0 +1,94 @@
+import { computed, onMounted, reactive, toRefs } from 'vue';
+import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
+import { filterCardsByState, loadLocalCards, massageCard, sameDay, sortByLastReview, unmassageCard, updateLocalCards, updateNewCardsPerDay } from './utils';
+import type { Store } from './types';
+import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
+import type { Card } from '@/types';
+
+
+
+const params = generatorParameters({
+    enable_short_term: true,
+    enable_fuzz: true,
+    maximum_interval: 0.8
+});
+export const f = fsrs(params);
+
+const store: Store = reactive({
+    totalCards: [],
+
+    learningTotalCards: computed(() => filterCardsByState(store.totalCards, State.Learning)),
+    newTotalCards: computed(() => filterCardsByState(store.totalCards, State.New)),
+    reviewTotalCards: computed(() => filterCardsByState(store.totalCards, State.Review)),
+    relearningTotalCards: computed(() => filterCardsByState(store.totalCards, State.Relearning)),
+
+
+    dueCards: computed(() => [...store.totalCards]
+        .filter(card => sameDay(new Date(card.schedule.due), new Date()))
+        .sort(sortByLastReview)
+    ),
+
+    learningCards: computed(() => filterCardsByState(store.dueCards, State.Learning)),
+    newCards: computed(() => filterCardsByState(store.dueCards, State.New)),
+    reviewCards: computed(() => filterCardsByState(store.dueCards, State.Review)),
+    relearningCards: computed(() => filterCardsByState(store.dueCards, State.Relearning)),
+
+    currentCard: computed(() => {
+        return store.dueCards.length > 0 ? store.dueCards[0] : undefined
+    }),
+
+
+    initialTotal: 0,
+    isLoading: true,
+    newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
+});
+
+export function useStore() {
+    function initStore() {
+        if (store.totalCards.length === 0) {
+            onMounted(() => {
+                store.totalCards = loadLocalCards();
+                store.initialTotal = store.dueCards.length;
+                if (store.currentCard == null && store.dueCards.length > 0) {
+                    store.currentCard = store.dueCards[0];
+                }
+                setTimeout(() => store.isLoading = false, 500);
+            })
+        }
+    }
+
+    function rateCard(grade: Grade) {
+        if (store.currentCard) {
+            const fsrsCard = unmassageCard(store.currentCard.schedule);
+            if (fsrsCard) {
+                const schedulingCards = f.repeat(fsrsCard, new Date());
+                const { card } = schedulingCards[grade];
+                store.currentCard.schedule = massageCard({ ...card, cid: store.currentCard.name });
+                updateLocalCards(store.totalCards);
+            }
+        }
+    }
+
+    function setTotalCards(cards: Card[]) {
+        store.totalCards = cards;
+        updateLocalCards(store.totalCards);
+    }
+
+    function setNewCardsPerDay(newCardsPerDay: number) {
+        store.newCardsPerDay = newCardsPerDay;
+        const updatedCards = updateNewCardsPerDay(store.totalCards, newCardsPerDay);
+        setTotalCards(updatedCards);
+    }
+
+    function setCurrentCard(name: string) {
+        store.currentCard = store.totalCards.find(card => card.name === name);
+    }
+
+    return {
+        ...toRefs(store),
+        initStore,
+        setCurrentCard,
+        setNewCardsPerDay,
+        rateCard
+    }
+}
