@@ -1,6 +1,6 @@
 import { computed, onMounted, reactive, toRefs } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { filterCardsByState, loadLocalStore, massageCard, sameDay, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
+import { filterCardsByState, loadLocalStore, massageCard, overDue, sameDay, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
 import type { Card } from '@/types';
@@ -24,7 +24,7 @@ const store: Store = reactive({
 
 
     dueCards: computed(() => [...store.totalCards]
-        .filter(card => sameDay(new Date(card.schedule.due), new Date()))
+        .filter(card => sameDay(new Date(), new Date(card.schedule.due)) || overDue(card.schedule))
         .sort(sortByLastReview)
     ),
 

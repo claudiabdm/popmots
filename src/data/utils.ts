@@ -89,17 +89,11 @@ export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number)
     const cards: Card[] = [...totalCards].sort(sortByLastReview);
     const now = new Date();
     let newCardsAdded = 0;
-    let due = now;
     for (const { schedule } of cards) {
         if (schedule.state === State.New) {
-            if (newCardsAdded < newCardsPerDay) {
+            if (newCardsAdded % newCardsPerDay === 0) {
+                schedule.due = new Date(now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / newCardsPerDay)));
                 newCardsAdded += 1;
-                schedule.due = new Date(now);
-            } else {
-                if (newCardsAdded % newCardsPerDay === 0) {
-                    due = new Date(now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / newCardsPerDay)));
-                    schedule.due = due
-                }
             }
         }
     }
@@ -126,6 +120,10 @@ export function sameDay(d1: Date, d2: Date) {
     return d1.getFullYear() === d2.getFullYear() &&
         d1.getMonth() === d2.getMonth() &&
         d1.getDate() === d2.getDate();
+}
+
+export function overDue(schedule: ScheduleCard) {
+    return new Date() > new Date(schedule.due);
 }
 
 export function filterCardsByState<T extends State>(cards: Card<State>[], state: T) {
