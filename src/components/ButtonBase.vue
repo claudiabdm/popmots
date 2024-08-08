@@ -14,7 +14,9 @@ defineOptions({
     inheritAttrs: false
 })
 
-withDefaults(defineProps<ButtonBaseProps>(), {})
+withDefaults(defineProps<ButtonBaseProps>(), {
+    action: 'primary',
+})
 
 const isTouched = ref(false);
 
