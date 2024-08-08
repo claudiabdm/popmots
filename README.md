@@ -4,7 +4,7 @@ Learn the 10000 most common words in French with flashcards 🃏
 
 ## Introduction
 
-Popmots is a responsive web app that allows you to learn the 10000 most common French words using spaced repetition.
+Popmots is a responsive web app that allows you to learn the 10000 most common French words with flashcards using spaced repetition.
 
 You can study flashcards for each word that contain its multiple definitions with examples and pronunctiation.
 
