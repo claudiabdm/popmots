@@ -89,13 +89,18 @@ export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number)
     const cards: Card[] = [...totalCards].sort(sortByLastReview);
     const now = new Date();
     let newCardsAdded = 0;
+    let due = 0;
     for (const { schedule } of cards) {
-        if (schedule.state === State.New) {
-            if (newCardsAdded % newCardsPerDay === 0) {
-                schedule.due = new Date(now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / newCardsPerDay)));
-                newCardsAdded += 1;
-            }
+        // Update due date each time a new day has been complete 
+        // with the set number of new cards 
+        if (newCardsAdded % newCardsPerDay === 0) {
+            due = now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / newCardsPerDay));
         }
+        // Reschedule new cards based on the new cards per day
+        if (schedule.state === State.New) {
+            schedule.due = new Date(due);
+        }
+        newCardsAdded += 1;
     }
     return cards;
 }
@@ -106,6 +111,7 @@ export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     let due = 0;
     for (const [name, entries] of dictionary) {
         if (newCardsAdded >= 100) break;
+        // Group cards by new cards per day
         if (newCardsAdded % cardsPerDay === 0) {
             due = now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / cardsPerDay));
         }
@@ -114,12 +120,6 @@ export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
         newCardsAdded += 1;
     }
     return newCards;
-}
-
-export function sameDay(d1: Date, d2: Date) {
-    return d1.getFullYear() === d2.getFullYear() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getDate() === d2.getDate();
 }
 
 export function overDue(schedule: ScheduleCard) {

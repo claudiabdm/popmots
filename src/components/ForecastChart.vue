@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Chart as ChartJS, BarElement, LinearScale, BarController, CategoryScale, Tooltip } from 'chart.js'
+import { DAY_IN_MILLISECONDS, useStore } from '@/data';
+import { sameDay } from '@/utils';
+import { overDue } from '@/data/utils';
 
 ChartJS.register(BarElement, LinearScale, BarController, CategoryScale, Tooltip)
 ChartJS.defaults.font.family = 'Nunito Variable'
@@ -8,33 +11,55 @@ ChartJS.defaults.font.weight = 'bolder'
 ChartJS.defaults.font.size = 14
 
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const TODAY = (new Date()).toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
+const TODAY_INDEX = DAYS.indexOf(TODAY);
+const DAY_LABELS: string[] = DAYS.map((_, i) => DAYS[(TODAY_INDEX + i) % DAYS.length])
+
+const store = useStore();
 
 const canvas = ref<HTMLCanvasElement>();
 
-// Get today date of the week for uk format
-const today = (new Date()).toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
-const todayIndex = DAYS.indexOf(today);
 
-const dayLabels: string[] = []
-for (let i = 0; i < DAYS.length; i++) {
-  dayLabels.push(DAYS[(todayIndex + i) % DAYS.length])
-}
+const due7days = computed(() => {
+  const dueArr = new Array<number>(7).fill(0);
+  const now = new Date();
+  const dates = dueArr.map((_, i) => new Date(now.getTime() + i * DAY_IN_MILLISECONDS));
+  for (const card of store.totalCards.value) {
+    // if card is due after 7 days, skip
+    if (card.schedule.due > dates[6]) continue;
+
+    // if card is over due, add it to today's due cards
+    if (overDue(card.schedule)) {
+      dueArr[0] += 1;
+      continue;
+    };
+
+    // add cards to each corresponding due date
+    for (let i = 0; i < dates.length; i++) {
+      if (sameDay(card.schedule.due, dates[i])) {
+        dueArr[i] += 1;
+        break;
+      }
+    }
+  }
+  return dueArr;
+})
 
 onMounted(() => {
-
   if (canvas.value) {
     const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary')
     const primaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-light')
     const secondaryLightColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-lighter')
     const secondaryLightColorAlpha = getComputedStyle(document.documentElement).getPropertyValue('--secondary').replace(')', ', 0.8)')
 
+    // TODO: refactor
     new ChartJS(canvas.value, {
       type: 'bar',
       data: {
-        labels: dayLabels,
+        labels: DAY_LABELS,
         datasets: [{
           label: '7 days review forecast',
-          data: [12, 19, 3, 5, 2, 3],
+          data: due7days.value,
           barThickness: 30,
           borderWidth: 2,
           borderRadius: 10,

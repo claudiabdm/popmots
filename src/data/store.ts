@@ -1,9 +1,10 @@
 import { computed, onMounted, reactive, toRefs } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { filterCardsByState, loadLocalStore, massageCard, overDue, sameDay, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
+import { filterCardsByState, loadLocalStore, massageCard, overDue, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
 import type { Card } from '@/types';
+import { sameDay } from '@/utils';
 
 
 
@@ -23,7 +24,7 @@ const store: Store = reactive({
     relearningTotalCards: computed(() => filterCardsByState(store.totalCards, State.Relearning)),
 
 
-    dueCards: computed(() => [...store.totalCards]
+    dueCards: computed(() => store.totalCards
         .filter(card => sameDay(new Date(), new Date(card.schedule.due)) || overDue(card.schedule))
         .sort(sortByLastReview)
     ),
@@ -67,8 +68,8 @@ export function useStore() {
             if (fsrsCard) {
                 const schedulingCards = f.repeat(fsrsCard, new Date());
                 const { card } = schedulingCards[grade];
-                store.currentCard.schedule = massageCard({ ...card, cid: store.currentCard.name });
-                updateLocalStore(store.totalCards, 'totalCards');
+                const updatedSchedule = massageCard({ ...card, cid: store.currentCard.name });
+                updateCard(store.currentCard.name, { ...store.currentCard, schedule: updatedSchedule });
             }
         }
     }
@@ -88,6 +89,12 @@ export function useStore() {
 
     function setCurrentCard(name: string) {
         store.currentCard = store.totalCards.find(card => card.name === name);
+    }
+
+    function updateCard(name: string, card: Card) {
+        const index = store.totalCards.findIndex(c => c.name === name);
+        store.totalCards[index] = card;
+        updateLocalStore(store.totalCards, 'totalCards');
     }
 
     return {
