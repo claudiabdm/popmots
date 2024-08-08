@@ -1,6 +1,6 @@
 import { computed, onMounted, reactive, toRefs } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { filterCardsByState, loadLocalCards, massageCard, sameDay, sortByLastReview, unmassageCard, updateLocalCards, updateNewCardsPerDay } from './utils';
+import { filterCardsByState, loadLocalStore, massageCard, sameDay, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
 import type { Card } from '@/types';
@@ -40,14 +40,18 @@ const store: Store = reactive({
 
     initialTotal: 0,
     isLoading: true,
-    newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
+    settings: {
+        newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
+    }
 });
 
 export function useStore() {
     function initStore() {
         if (store.totalCards.length === 0) {
             onMounted(() => {
-                store.totalCards = loadLocalCards();
+                const localStore = loadLocalStore();
+                store.totalCards = localStore.totalCards;
+                store.settings = localStore.settings;
                 store.initialTotal = store.dueCards.length;
                 if (store.currentCard == null && store.dueCards.length > 0) {
                     store.currentCard = store.dueCards[0];
@@ -64,19 +68,21 @@ export function useStore() {
                 const schedulingCards = f.repeat(fsrsCard, new Date());
                 const { card } = schedulingCards[grade];
                 store.currentCard.schedule = massageCard({ ...card, cid: store.currentCard.name });
-                updateLocalCards(store.totalCards);
+                updateLocalStore(store.totalCards, 'totalCards');
             }
         }
     }
 
     function setTotalCards(cards: Card[]) {
         store.totalCards = cards;
-        updateLocalCards(store.totalCards);
+        store.initialTotal = store.dueCards.length;
+        updateLocalStore(store.totalCards, 'totalCards');
     }
 
     function setNewCardsPerDay(newCardsPerDay: number) {
-        store.newCardsPerDay = newCardsPerDay;
+        store.settings.newCardsPerDay = newCardsPerDay;
         const updatedCards = updateNewCardsPerDay(store.totalCards, newCardsPerDay);
+        updateLocalStore(store.settings, 'settings');
         setTotalCards(updatedCards);
     }
 

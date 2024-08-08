@@ -2,6 +2,7 @@ import type { Card, ScheduleCard, FSRSCard } from "@/types";
 import { dictionary } from "most-common-words-fr-dict-generator";
 import { createEmptyCard, State } from "ts-fsrs";
 import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY } from "./constants";
+import type { LocalStore, Store } from "./types";
 
 export function massageCard(card: FSRSCard & { cid: string }): ScheduleCard {
     return {
@@ -48,20 +49,40 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
     }
 }
 
-export function loadLocalCards() {
-    const totalCards: Card[] = [];
-    const localCards = localStorage.getItem('Cards');
-    const localCardsParsed = localCards ? JSON.parse(localCards) : undefined;
+export function loadLocalStore() {
+    const settings = loadLocalSettings();
+    const totalCards = loadLocalCards();
+    return { settings, totalCards };
+}
 
-    if (localCardsParsed && localCardsParsed.length > 0) {
-        totalCards.push(...localCardsParsed);
+function loadLocalCards(): Store['totalCards'] {
+    const localCards = localStorage.getItem('totalCards');
+    const localCardsParsed: Store['totalCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
+    if (localCardsParsed) {
+        return localCardsParsed;
     } else {
         const allCards = createAllCards();
-        totalCards.push(...allCards);
-        localStorage.setItem('Cards', JSON.stringify(totalCards));
+        localStorage.setItem('totalCards', JSON.stringify(allCards));
+        return allCards;
     }
+}
 
-    return totalCards;
+function loadLocalSettings(): Store['settings'] {
+    const settings = localStorage.getItem('settings');
+    const settingsParsed: Store['settings'] | undefined = settings ? JSON.parse(settings) : undefined;
+    if (settingsParsed) {
+        return settingsParsed;
+    } else {
+        const settings: Store['settings'] = {
+            newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
+        }
+        localStorage.setItem('settings', JSON.stringify(settings));
+        return settings;
+    }
+}
+
+export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T], propertyName: T) {
+    localStorage.setItem(propertyName, JSON.stringify(store));
 }
 
 export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number) {
@@ -84,10 +105,6 @@ export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number)
     }
     return cards;
 }
-export function updateLocalCards(totalCards: Card[]) {
-    localStorage.setItem('Cards', JSON.stringify(totalCards));
-}
-
 export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     const newCards: Card[] = [];
     const now = new Date();

@@ -18,5 +18,9 @@ export interface Store {
     currentCard: Card | undefined,
     isLoading: boolean,
 
-    newCardsPerDay: number,
+    settings: {
+        newCardsPerDay: number,
+    }
 }
+
+export type LocalStore = Pick<Store, 'totalCards' | 'settings'>
