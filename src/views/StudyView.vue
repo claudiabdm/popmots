@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue'
 import ButtonButton from '@/components/ButtonButton.vue';
 import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ViewSection from '@/components/ViewSection.vue';
@@ -7,6 +8,10 @@ import StudyCard from '@/components/StudyCard.vue';
 import StudyRatingButtons from '@/components/StudyRatingButtons.vue';
 import { ref, watch } from 'vue';
 import { useStore } from '@/data';
+
+useHead({
+  title: 'Study'
+})
 
 const { currentCard } = useStore()
 

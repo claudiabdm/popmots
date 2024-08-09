@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue'
 import { RouterView } from 'vue-router'
 import TheHeader from './components/TheHeader.vue';
 import { useStore } from './data';
@@ -7,6 +8,10 @@ import CopyRight from './components/CopyRight.vue';
 
 const store = useStore();
 store.initStore()
+
+useHead({
+  titleTemplate: title => `${title === 'Home' ? 'PopMots' : `${title} | PopMots`}`,
+})
 </script>
 
 <template>

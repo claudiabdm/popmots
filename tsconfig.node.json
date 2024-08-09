@@ -6,7 +6,8 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
-    "plugins/*.ts"
+    "plugins/*.ts",
+    "src/data/constants.ts",
   ],
   "compilerOptions": {
     "composite": true,

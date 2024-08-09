@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useHead } from '@unhead/vue'
 import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import SvgIcon from '@/components/IconBase.vue';
@@ -8,6 +9,10 @@ import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
 import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
 import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
+
+useHead({
+  title: 'Home'
+})
 </script>
 
 <template>

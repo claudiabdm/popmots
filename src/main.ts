@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import '@fontsource-variable/nunito/wght.css';
 import './assets/styles/styles.scss';
+import { createHead } from '@unhead/vue';
 // import { DAY_IN_MILLISECONDS } from './data';
 
 // @ts-ignore
@@ -18,7 +19,9 @@ import './assets/styles/styles.scss';
 // };
 
 const app = createApp(App)
-
 app.use(router)
+
+const head = createHead()
+app.use(head)
 
 app.mount('#app')

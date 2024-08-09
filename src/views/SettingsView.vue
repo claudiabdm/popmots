@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+import { useHead } from '@unhead/vue'
 import ButtonButton from '@/components/ButtonButton.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import ViewSection from '@/components/ViewSection.vue';
 import { DEFAULT_NEW_CARDS_PER_DAY, useStore } from '@/data';
 import { computed, onMounted, ref, watch } from 'vue';
+
+useHead({
+  title: 'Settings'
+})
 
 
 const { totalCards, settings, setNewCardsPerDay } = useStore();
