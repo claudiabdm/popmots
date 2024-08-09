@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -18,7 +22,7 @@
     "@fontsource-variable/nunito": "^5.0.19",
     "@unhead/vue": "^1.9.16",
     "chart.js": "^4.4.3",
-    "most-common-words-fr-dict-generator": "^1.0.8",
+    "most-common-words-fr-dict-generator": "^1.0.9",
     "ts-fsrs": "^4.1.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
