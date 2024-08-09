@@ -17,7 +17,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Words from [my dictionary generator](https://github.com/claudiabdm/french-most-common-words-dictionary-generator) that uses [lexique](http://www.lexique.org/) and [kaikki](https://kaikki.org/) databases.
 - [x] Schedule cards based on the [fsrs](https://github.com/open-spaced-repetition/free-spaced-repetition-scheduler) spaced repetition algorithm
 - [x] Rate flashcards by hard, good or easy to remember
-- [x] 7 day forescat of due cards
+- [x] 7 day forecast of due cards
 - [x] Set the number of new cards per day
 - [x] PWA for offline use
 - [ ] Increase total number of words (currently only 2000 because limit in localStorage)
