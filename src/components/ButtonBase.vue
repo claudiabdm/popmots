@@ -87,6 +87,7 @@ function buttonReleased() {
         border-radius: var(--border-radius);
         transform: translate3d(0, 4px, 0);
         background-color: var(--primary-dark);
+        z-index: -1;
     }
 
     &:hover,
