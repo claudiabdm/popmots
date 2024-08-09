@@ -1,4 +1,6 @@
-# Popmots!
+# PopMots!
+
+![PopMots logo](./public/logo-horizontal.png)
 
 Learn the 10000 most common words in French with flashcards 🃏
 
