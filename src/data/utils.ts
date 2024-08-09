@@ -62,7 +62,7 @@ function loadLocalCards(settings?: Store['settings']): Store['totalCards'] {
         return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
     } else {
         const allCards = createAllCards(settings?.newCardsPerDay);
-        localStorage.setItem('totalCards', JSON.stringify(allCards));
+        updateLocalStore(allCards, 'totalCards');
         return allCards;
     }
 }
@@ -76,13 +76,15 @@ function loadLocalSettings(): Store['settings'] {
         const settings: Store['settings'] = {
             newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
         }
-        localStorage.setItem('settings', JSON.stringify(settings));
+        updateLocalStore(settings, 'settings');
         return settings;
     }
 }
 
 export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T], propertyName: T) {
-    localStorage.setItem(propertyName, JSON.stringify(store));
+    setTimeout(() => {
+        localStorage.setItem(propertyName, JSON.stringify(store));
+    }, 0)
 }
 
 export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number) {
@@ -110,7 +112,7 @@ export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     let newCardsAdded = 0;
     let due = 0;
     for (const [name, entries] of dictionary) {
-        if (newCardsAdded >= 100) break;
+        if (newCardsAdded >= 2000) break;
         // Group cards by new cards per day
         if (newCardsAdded % cardsPerDay === 0) {
             due = now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / cardsPerDay));
