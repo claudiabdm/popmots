@@ -57,7 +57,7 @@ export function useStore() {
                 if (store.currentCard == null && store.dueCards.length > 0) {
                     store.currentCard = store.dueCards[0];
                 }
-                setTimeout(() => store.isLoading = false, 500);
+                setTimeout(() => store.isLoading = false, 2000);
             })
         }
     }

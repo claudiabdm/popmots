@@ -2,6 +2,8 @@
 import { RouterView } from 'vue-router'
 import TheHeader from './components/TheHeader.vue';
 import { useStore } from './data';
+import LogoLoading from './components/LogoLoading.vue';
+import CopyRight from './components/CopyRight.vue';
 
 const store = useStore();
 store.initStore()
@@ -11,13 +13,9 @@ store.initStore()
   <div class="app">
     <TheHeader />
     <main class="main">
-      <div
-        v-if="store.isLoading.value"
-        class="loader"
-      >
-        Popmots
-      </div>
+      <LogoLoading />
       <RouterView />
+      <CopyRight />
     </main>
   </div>
 </template>
@@ -46,21 +44,5 @@ body {
     padding-bottom: var(--footer-height);
   }
 
-}
-
-
-.loader {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--primary);
-  background-color: #fff;
-  font-size: var(--font-5);
-  font-weight: 700;
-  pointer-events: none;
-  user-select: none;
-  z-index: 9999;
 }
 </style>
