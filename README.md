@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Popmots is a responsive web app that allows you to learn the 10000 most common French words with flashcards using spaced repetition.
+Popmots is a responsive progressive web app that allows you to learn the 10000 most common French words with flashcards using spaced repetition.
 
 You can study flashcards for each word. Each flashcard contain multiple meaning for the word along with examples and pronunctiation.
 
@@ -14,11 +14,13 @@ Try it out at [https://popmots.com](https://popmots.com) !
 
 ## Features
 
+- [x] Words from [my dictionary generator](https://github.com/claudiabdm/french-most-common-words-dictionary-generator) that uses [lexique](http://www.lexique.org/) and [kaikki](https://kaikki.org/) databases.
 - [x] Schedule cards based on the [fsrs](https://github.com/open-spaced-repetition/free-spaced-repetition-scheduler) spaced repetition algorithm
 - [x] Rate flashcards by hard, good or easy to remember
 - [x] 7 day forescat of due cards
 - [x] Set the number of new cards per day
-- [ ] (wip) PWA for offline use
+- [x] PWA for offline use
+- [ ] Increase total number of words (currently only 2000 because limit in localStorage)
 - [ ] Keep data local with IndexDB (better for PWA) or use Supabase
 
 ## Tech Stack
