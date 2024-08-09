@@ -72,7 +72,7 @@ const { isLoading = true } = useStore();
         background-color: #fff;
         border-radius: 10px;
         border: 5px solid var(--secondary-light);
-        animation: borderColor 2s alternate infinite;
+        animation: borderColor 1s alternate infinite;
         z-index: 10;
     }
 
@@ -104,13 +104,13 @@ const { isLoading = true } = useStore();
 
     .text {
         fill: var(--secondary-light);
-        animation: fill 2s alternate infinite;
+        animation: fill 1s alternate infinite;
     }
 
     .stroke {
         stroke: var(--secondary-light);
         stroke-dasharray: 1200;
-        animation: dash 4s linear infinite, colorStroke 2s alternate infinite;
+        animation: dash 2s linear infinite, colorStroke 1s alternate infinite;
     }
 
     @keyframes dash {
