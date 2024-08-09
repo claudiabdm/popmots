@@ -40,7 +40,7 @@ const { isLoading = true } = useStore();
                     fill="#6366F1"
                 />
             </svg>
-            <CopyRight class="copyright" />
+            <CopyRight />
         </div>
     </Transition>
 </template>

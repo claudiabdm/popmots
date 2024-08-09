@@ -17,7 +17,7 @@
     color: var(--secondary);
     margin: var(--space-xl) 0;
     font-size: var(--font--1);
-    font-weight: 700;
+    font-weight: 400;
     text-align: center;
     z-index: 10;
 

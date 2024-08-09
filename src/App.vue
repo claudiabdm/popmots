@@ -20,7 +20,6 @@ useHead({
     <main class="main">
       <LogoLoading />
       <RouterView />
-      <CopyRight />
     </main>
   </div>
 </template>

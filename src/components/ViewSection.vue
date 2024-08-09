@@ -1,6 +1,16 @@
+<script lang="ts" setup>
+import CopyRight from './CopyRight.vue';
+
+withDefaults(defineProps<{
+    withCopyRight?: boolean
+}>(), {
+    withCopyRight: true
+})
+</script>
 <template>
     <section class="section">
         <slot />
+        <CopyRight v-if="withCopyRight" />
     </section>
 </template>
 <style lang="scss">

@@ -28,7 +28,10 @@ function flipCard() {
 </script>
 
 <template>
-  <ViewSection class="study">
+  <ViewSection
+    class="study"
+    :with-copy-right="false"
+  >
     <ViewHeader
       with-back-btn
       sr-only-title
