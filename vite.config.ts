@@ -25,9 +25,9 @@ export default defineConfig({
         theme_color: THEME_COLOR,
       },
       pwaAssets: {
+        config: './pwa-assets.config.ts',
         disabled: false,
-        preset: 'minimal-2023',
-        image: './public/logo.svg',
+        image: './public/favicon.svg',
         includeHtmlHeadLinks: true,
         injectThemeColor: true
       },
