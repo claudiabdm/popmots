@@ -4,7 +4,6 @@ import { RouterView } from 'vue-router'
 import TheHeader from './components/TheHeader.vue';
 import { useStore } from './data';
 import LogoLoading from './components/LogoLoading.vue';
-import CopyRight from './components/CopyRight.vue';
 
 const store = useStore();
 store.initStore()
