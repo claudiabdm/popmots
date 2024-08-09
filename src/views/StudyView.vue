@@ -8,12 +8,14 @@ import StudyCard from '@/components/StudyCard.vue';
 import StudyRatingButtons from '@/components/StudyRatingButtons.vue';
 import { ref, watch } from 'vue';
 import { useStore } from '@/data';
+import { useNextSessionTime } from '@/components/composables/useNextSessionTime';
 
 useHead({
   title: 'Study'
 })
 
 const { currentCard } = useStore()
+const nextSessionTime = useNextSessionTime()
 
 const isFlipped = ref(false);
 
@@ -41,8 +43,8 @@ function flipCard() {
     </ViewHeader>
 
     <div
-      v-if="currentCard"
       class="study__cards"
+      v-if="currentCard"
     >
       <Transition>
         <StudyCard
@@ -57,15 +59,21 @@ function flipCard() {
       <ButtonButton
         class="study__button"
         v-if="!isFlipped"
-        icon-name="eye"
+        :icon-name="nextSessionTime ? undefined : 'study'"
+        :disabled="Boolean(nextSessionTime)"
         @click="flipCard"
       >
-        Show Answer
+        <span
+          v-if="nextSessionTime"
+          class="study__time"
+        >
+          {{ nextSessionTime }}
+        </span>
+        <template v-else>
+          Show answer
+        </template>
       </ButtonButton>
-
-      <template v-else>
-        <StudyRatingButtons />
-      </template>
+      <StudyRatingButtons v-else />
     </section>
   </ViewSection>
 </template>
@@ -88,18 +96,16 @@ function flipCard() {
     }
   }
 
-  &__btn {
-    width: 100%;
-  }
-
   &__buttons {
     display: flex;
     height: 50px;
     width: clamp($min-width, 100%, $max-width);
     margin: 0 auto;
     gap: var(--space-xs);
+  }
 
-
+  &__time {
+    font-size: var(--font-0);
   }
 }
 

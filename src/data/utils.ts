@@ -87,6 +87,12 @@ export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T
     }, 0)
 }
 
+export function resetLocalStore() {
+    localStorage.removeItem('totalCards');
+    localStorage.removeItem('settings');
+    return loadLocalStore();
+}
+
 export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number) {
     const cards: Card[] = [...totalCards].sort(sortByLastReview);
     const now = new Date();
@@ -138,6 +144,18 @@ export function sortByLastReview(a: Card, b: Card) {
     } else if (a.schedule.lastReview) {
         return 1;
     } else if (b.schedule.lastReview) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+
+export function sortByDue(a: Card, b: Card) {
+    if (a.schedule.due && b.schedule.due) {
+        return new Date(a.schedule.due).getTime() - new Date(b.schedule.due).getTime();
+    } else if (a.schedule.due) {
+        return 1;
+    } else if (b.schedule.due) {
         return -1;
     } else {
         return 0;

@@ -9,10 +9,13 @@ import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
 import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
 import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
+import { useNextSessionTime } from '@/components/composables/useNextSessionTime';
 
 useHead({
   title: 'Home'
 })
+
+const nextSessionTime = useNextSessionTime()
 </script>
 
 <template>
@@ -37,11 +40,21 @@ useHead({
       <ProgressBarCurrent class="study__progress" />
       <ProgressSummaryCurrent />
       <ButtonLink
+        :class="['home__button', { 'home__button--disabled': Boolean(nextSessionTime) }]"
         to="/study"
-        icon-name="study"
         action="easy"
+        :icon-name="nextSessionTime ? undefined : 'study'"
+        :disabled="Boolean(nextSessionTime)"
       >
-        Go to study
+        <span
+          v-if="nextSessionTime"
+          class="home__time"
+        >
+          {{ nextSessionTime }}
+        </span>
+        <template v-else>
+          Show answer
+        </template>
       </ButtonLink>
     </article>
 
@@ -77,6 +90,10 @@ useHead({
     }
   }
 
+  &__button {
+    width: max-content;
+  }
+
   &__subtitle {
     color: var(--secondary);
     font-size: var(--font-0);
@@ -86,6 +103,10 @@ useHead({
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+  }
+
+  &__time {
+    font-size: var(--font-0);
   }
 
 }

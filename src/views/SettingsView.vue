@@ -11,7 +11,7 @@ useHead({
 })
 
 
-const { totalCards, settings, setNewCardsPerDay } = useStore();
+const { totalCards, settings, setNewCardsPerDay, resetStore } = useStore();
 
 
 const newCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
@@ -39,6 +39,21 @@ const saveState = computed(() => isSaving.value == null
     'Saving...' : 'Saved!')
 
 
+const resetActionState = computed(() => isSaving.value == null
+  ?
+  'hard' : isSaving.value === false
+    ?
+    'easy' : 'hard'
+)
+
+const resetState = computed(() => isSaving.value == null
+  ?
+  'Reset all' : isSaving.value == true
+    ?
+    'Reseting...' : 'Reset!'
+)
+
+
 function setNewCardsPerDayInput(e: Event) {
   if (e.target instanceof HTMLInputElement) {
     newCardsPerDayInput.value = Number(e.target.value)
@@ -57,6 +72,15 @@ function submitForm(e: Event) {
   }
 }
 
+
+function reset() {
+  if (confirm('Are you sure you want to reset all cards?')) {
+    isSaving.value = true
+    resetStore()
+    setTimeout(() => isSaving.value = false, 500)
+    setTimeout(() => isSaving.value = undefined, 2000)
+  }
+}
 
 </script>
 <template>
@@ -94,6 +118,16 @@ function submitForm(e: Event) {
         :disabled="isSaving"
       >
         {{ saveState }}
+      </ButtonButton>
+
+      <ButtonButton
+        class="settings__form-submit"
+        type="button"
+        :action="resetActionState"
+        :disabled="isSaving"
+        @click="reset"
+      >
+        {{ resetState }}
       </ButtonButton>
     </form>
   </ViewSection>
