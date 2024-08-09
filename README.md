@@ -18,7 +18,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Rate flashcards by hard, good or easy to remember
 - [x] 7 day forescat of due cards
 - [x] Set the number of new cards per day
-- [] PWA for offline use
+- [] (wip) PWA for offline use
 - [] Keep data local with IndexDB (better for PWA) or use Supabase
 
 ## Tech Stack
