@@ -4,7 +4,11 @@ import TheNavbar from './TheNavbar.vue';
 
 <template>
     <header class="header">
-        <h1 class="header__title">Popmots</h1>
+        <h1 class="header__title">
+            <RouterLink to="/">
+                PopMots
+            </RouterLink>
+        </h1>
         <TheNavbar />
     </header>
 </template>
@@ -23,9 +27,14 @@ import TheNavbar from './TheNavbar.vue';
         padding: var(--space-m);
 
         &__title {
-            font-size: var(--font-2);
+            font-size: var(--font-3);
             color: var(--primary);
             padding: 0 var(--space-xs);
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
         }
     }
 }
