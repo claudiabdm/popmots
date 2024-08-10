@@ -20,7 +20,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] 7 day forecast of due cards
 - [x] Set the number of new cards per day
 - [x] PWA for offline use
-- [x] 10000 most common words
+- [x] ~10000 most common words
 - [ ] Local audio
 - [ ] Option to login/signup
 
