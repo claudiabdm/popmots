@@ -72,7 +72,7 @@ function buttonReleased() {
 .button-wrapper {
     position: relative;
     width: clamp($min-width, 100%, $max-width);
-    height: 100%;
+    height: 50px;
     margin: auto;
     cursor: pointer;
 
