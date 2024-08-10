@@ -4,13 +4,13 @@ import { computed } from 'vue';
 import ProgressSummaryBase from './ProgressSummaryBase.vue';
 import { State } from 'ts-fsrs';
 
-const { learningTotalCards, newTotalCards, reviewTotalCards, relearningTotalCards } = useStore();
+const { learninguserCards, newuserCards, reviewuserCards, relearninguserCards } = useStore();
 
 const summary = computed(() => [
-  { text: 'left' as const, type: State.New as const, valueNow: newTotalCards.value.length },
-  { text: 'learning' as const, type: State.Learning as const, valueNow: learningTotalCards.value.length },
-  { text: 'reviewed' as const, type: State.Review as const, valueNow: reviewTotalCards.value.length },
-  { text: 'relearning' as const, type: State.Relearning as const, valueNow: relearningTotalCards.value.length },
+  { text: 'left' as const, type: State.New as const, valueNow: newuserCards.value.length },
+  { text: 'learning' as const, type: State.Learning as const, valueNow: learninguserCards.value.length },
+  { text: 'reviewed' as const, type: State.Review as const, valueNow: reviewuserCards.value.length },
+  { text: 'relearning' as const, type: State.Relearning as const, valueNow: relearninguserCards.value.length },
 ])
 
 </script>

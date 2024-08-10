@@ -1,9 +1,10 @@
 import { computed, onMounted, reactive, toRefs } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { filterCardsByState, loadLocalStore, massageCard, overDue, resetLocalStore, sortByLastReview, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
+import { filterCardsByState, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { LocalStore, Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
-import type { Card } from '@/types';
+import { dictionary } from 'most-common-words-fr-dict-generator';
+import type { UserCard } from '@/types';
 
 
 const params = generatorParameters({
@@ -14,17 +15,17 @@ const params = generatorParameters({
 export const f = fsrs(params);
 
 const store: Store = reactive({
-    totalCards: [],
+    userCards: [],
 
-    learningTotalCards: computed(() => filterCardsByState(store.totalCards, State.Learning)),
-    newTotalCards: computed(() => filterCardsByState(store.totalCards, State.New)),
-    reviewTotalCards: computed(() => filterCardsByState(store.totalCards, State.Review)),
-    relearningTotalCards: computed(() => filterCardsByState(store.totalCards, State.Relearning)),
+    learninguserCards: computed(() => filterCardsByState(store.userCards, State.Learning)),
+    newuserCards: computed(() => filterCardsByState(store.userCards, State.New)),
+    reviewuserCards: computed(() => filterCardsByState(store.userCards, State.Review)),
+    relearninguserCards: computed(() => filterCardsByState(store.userCards, State.Relearning)),
 
 
-    dueCards: computed(() => store.totalCards
+    dueCards: computed(() => store.userCards
         .filter(card => overDue(card.schedule))
-        .sort(sortByLastReview)
+        .sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview))
     ),
 
     learningCards: computed(() => filterCardsByState(store.dueCards, State.Learning)),
@@ -33,7 +34,14 @@ const store: Store = reactive({
     relearningCards: computed(() => filterCardsByState(store.dueCards, State.Relearning)),
 
     currentCard: computed(() => {
-        return store.dueCards.length > 0 ? store.dueCards[0] : undefined
+        if (store.dueCards.length > 0) {
+            const current = store.dueCards[0];
+            const entries = dictionary.get(current.name)
+            if (entries) {
+                return { ...store.dueCards[0], entries }
+            }
+        }
+        return undefined
     }),
 
     initialTotal: 0,
@@ -45,7 +53,7 @@ const store: Store = reactive({
 
 export function useStore() {
     function initStore() {
-        if (store.totalCards.length === 0) {
+        if (store.userCards.length === 0) {
             onMounted(() => {
                 const localStore = loadLocalStore();
                 setInitialValuesFromLocal(localStore)
@@ -54,12 +62,9 @@ export function useStore() {
     }
 
     function setInitialValuesFromLocal(localStore: LocalStore) {
-        store.totalCards = localStore.totalCards;
+        store.userCards = localStore.userCards;
         store.settings = localStore.settings;
         store.initialTotal = store.dueCards.length;
-        if (store.currentCard == null && store.dueCards.length > 0) {
-            store.currentCard = store.dueCards[0];
-        }
         setTimeout(() => store.isLoading = false, 1000);
     }
 
@@ -75,32 +80,28 @@ export function useStore() {
         }
     }
 
-    function setTotalCards(cards: Card[]) {
-        store.totalCards = cards;
+    function setuserCards(cards: UserCard[]) {
+        store.userCards = cards;
         store.initialTotal = store.dueCards.length;
-        updateLocalStore(store.totalCards, 'totalCards');
+        updateLocalStore(store.userCards, 'userCards');
     }
 
     function setNewCardsPerDay(newCardsPerDay: number) {
         store.settings.newCardsPerDay = newCardsPerDay;
-        const updatedCards = updateNewCardsPerDay(store.totalCards, newCardsPerDay);
+        const updatedCards = updateNewCardsPerDay(store.userCards, newCardsPerDay);
         updateLocalStore(store.settings, 'settings');
-        setTotalCards(updatedCards);
+        setuserCards(updatedCards);
     }
 
-    function setCurrentCard(name: string) {
-        store.currentCard = store.totalCards.find(card => card.name === name);
-    }
-
-    function updateCard(name: string, card: Card) {
-        const index = store.totalCards.findIndex(c => c.name === name);
-        store.totalCards[index] = card;
-        setTotalCards(store.totalCards);
+    function updateCard(name: string, card: UserCard) {
+        const index = store.userCards.findIndex(c => c.name === name);
+        store.userCards[index] = card;
+        setuserCards(store.userCards);
     }
 
     function resetStore() {
         store.isLoading = true;
-        store.totalCards = [];
+        store.userCards = [];
         const localStore = resetLocalStore();
         setInitialValuesFromLocal(localStore)
         store.isLoading = false;
@@ -109,7 +110,7 @@ export function useStore() {
     return {
         ...toRefs(store),
         initStore,
-        setCurrentCard,
+
         setNewCardsPerDay,
         rateCard,
         resetStore

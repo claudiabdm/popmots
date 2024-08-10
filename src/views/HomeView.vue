@@ -9,7 +9,7 @@ import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
 import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
 import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
-import { useNextSessionTime } from '@/components/composables/useNextSessionTime';
+import { useNextSessionTime } from '@/composables/useNextSessionTime';
 
 useHead({
   title: 'Home'
@@ -53,7 +53,7 @@ const nextSessionTime = useNextSessionTime()
           {{ nextSessionTime }}
         </span>
         <template v-else>
-          Show answer
+          Go to study
         </template>
       </ButtonLink>
     </article>
@@ -88,10 +88,6 @@ const nextSessionTime = useNextSessionTime()
     &:hover svg {
       opacity: 0.5;
     }
-  }
-
-  &__button {
-    width: max-content;
   }
 
   &__subtitle {

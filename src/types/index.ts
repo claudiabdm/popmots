@@ -11,9 +11,11 @@ export interface ScheduleCard<T extends State = State> extends PickRenameMulti<F
     readonly cid: string
     state: T
 }
-export interface Card<T extends State = State> {
+export interface UserCard<T extends State = State> {
     readonly name: string
-    readonly entries: WordEntries
     schedule: ScheduleCard<T>
 }
 export type WordEntries = Array<DictionaryWord>;
+export interface FlashCard extends UserCard {
+    entries: WordEntries
+}

@@ -1,5 +1,5 @@
 import { useStore } from '@/data';
-import { sortByDue } from '@/data/utils';
+import { sortByDate } from '@/data/utils';
 import { onMounted, onUnmounted, ref } from 'vue';
 export function useNextSessionTime() {
 
@@ -21,8 +21,8 @@ export function useNextSessionTime() {
     })
 
     function setNextSessionText() {
-        if (store.totalCards.value.length > 0 && store.dueCards.value.length === 0) {
-            const sorted = [...store.totalCards.value].sort(sortByDue)
+        if (store.userCards.value.length > 0 && store.dueCards.value.length === 0) {
+            const sorted = [...store.userCards.value].sort((a, b) => sortByDate(a.schedule.due, b.schedule.due))
             const firstDue = sorted?.[0].schedule.due ?? undefined;
             const now = new Date();
             if (firstDue) {

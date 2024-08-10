@@ -1,4 +1,4 @@
-import type { Card, ScheduleCard, FSRSCard } from "@/types";
+import type { ScheduleCard, FSRSCard, UserCard } from "@/types";
 import { dictionary } from "most-common-words-fr-dict-generator";
 import { createEmptyCard, State } from "ts-fsrs";
 import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY } from "./constants";
@@ -51,18 +51,18 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 
 export function loadLocalStore() {
     const settings = loadLocalSettings();
-    const totalCards = loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
-    return { settings, totalCards };
+    const userCards = loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
+    return { settings, userCards };
 }
 
-function loadLocalCards(settings?: Store['settings']): Store['totalCards'] {
-    const localCards = localStorage.getItem('totalCards');
-    const localCardsParsed: Store['totalCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
+function loadLocalCards(settings?: Store['settings']): Store['userCards'] {
+    const localCards = localStorage.getItem('userCards');
+    const localCardsParsed: Store['userCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
     if (localCardsParsed) {
         return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
     } else {
         const allCards = createAllCards(settings?.newCardsPerDay);
-        updateLocalStore(allCards, 'totalCards');
+        updateLocalStore(allCards, 'userCards');
         return allCards;
     }
 }
@@ -88,13 +88,13 @@ export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T
 }
 
 export function resetLocalStore() {
-    localStorage.removeItem('totalCards');
+    localStorage.removeItem('userCards');
     localStorage.removeItem('settings');
     return loadLocalStore();
 }
 
-export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number) {
-    const cards: Card[] = [...totalCards].sort(sortByLastReview);
+export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: number) {
+    const cards: UserCard[] = [...userCards].sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview));
     const now = new Date();
     let newCardsAdded = 0;
     let due = 0;
@@ -113,18 +113,18 @@ export function updateNewCardsPerDay(totalCards: Card[], newCardsPerDay: number)
     return cards;
 }
 export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
-    const newCards: Card[] = [];
+    const newCards: UserCard[] = [];
     const now = new Date();
     let newCardsAdded = 0;
     let due = 0;
-    for (const [name, entries] of dictionary) {
-        if (newCardsAdded >= 2000) break;
+    for (const [name] of dictionary) {
+        // if (newCardsAdded >= 2000) break;
         // Group cards by new cards per day
         if (newCardsAdded % cardsPerDay === 0) {
             due = now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / cardsPerDay));
         }
         const emptyCard = massageCard(createEmptyCard(due, (card: FSRSCard) => ({ ...card, cid: name })));
-        newCards.push({ name, entries, schedule: emptyCard })
+        newCards.push({ name, schedule: emptyCard })
         newCardsAdded += 1;
     }
     return newCards;
@@ -134,28 +134,16 @@ export function overDue(schedule: ScheduleCard) {
     return new Date() > new Date(schedule.due);
 }
 
-export function filterCardsByState<T extends State>(cards: Card<State>[], state: T) {
-    return cards.filter(card => card.schedule.state === state) as Card<typeof state>[]
+export function filterCardsByState<T extends State>(cards: UserCard<State>[], state: T) {
+    return cards.filter(card => card.schedule.state === state) as UserCard<typeof state>[]
 }
 
-export function sortByLastReview(a: Card, b: Card) {
-    if (a.schedule.lastReview && b.schedule.lastReview) {
-        return new Date(a.schedule.lastReview).getTime() - new Date(b.schedule.lastReview).getTime();
-    } else if (a.schedule.lastReview) {
+export function sortByDate(a?: Date, b?: Date) {
+    if (a && b) {
+        return new Date(a).getTime() - new Date(b).getTime();
+    } else if (a) {
         return 1;
-    } else if (b.schedule.lastReview) {
-        return -1;
-    } else {
-        return 0;
-    }
-}
-
-export function sortByDue(a: Card, b: Card) {
-    if (a.schedule.due && b.schedule.due) {
-        return new Date(a.schedule.due).getTime() - new Date(b.schedule.due).getTime();
-    } else if (a.schedule.due) {
-        return 1;
-    } else if (b.schedule.due) {
+    } else if (b) {
         return -1;
     } else {
         return 0;

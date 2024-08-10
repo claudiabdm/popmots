@@ -24,7 +24,7 @@ const due7days = computed(() => {
   const dueArr = new Array<number>(7).fill(0);
   const now = new Date();
   const dates = dueArr.map((_, i) => new Date(now.getTime() + i * DAY_IN_MILLISECONDS));
-  for (const card of store.totalCards.value) {
+  for (const card of store.userCards.value) {
     // if card is due after 7 days, skip
     if (card.schedule.due > dates[6]) continue;
 

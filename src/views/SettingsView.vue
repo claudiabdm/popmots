@@ -11,7 +11,7 @@ useHead({
 })
 
 
-const { totalCards, settings, setNewCardsPerDay, resetStore } = useStore();
+const { userCards, settings, setNewCardsPerDay, resetStore } = useStore();
 
 
 const newCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
@@ -106,7 +106,7 @@ function reset() {
           type="number"
           name="new-cards-per-day"
           min="5"
-          :max="totalCards.length"
+          :max="userCards.length"
           :value="newCardsPerDayInput"
           @input="setNewCardsPerDayInput"
         />

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import StudyCardFront from './StudyCardFront.vue';
 import StudyCardBack from './StudyCardBack.vue';
-import type { Card } from '@/types';
+import type { FlashCard } from '@/types';
 
 interface Props {
-    card: Card,
+    card: FlashCard,
     isFlipped?: boolean
 }
 

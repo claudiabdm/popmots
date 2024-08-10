@@ -8,7 +8,7 @@ import StudyCard from '@/components/StudyCard.vue';
 import StudyRatingButtons from '@/components/StudyRatingButtons.vue';
 import { ref, watch } from 'vue';
 import { useStore } from '@/data';
-import { useNextSessionTime } from '@/components/composables/useNextSessionTime';
+import { useNextSessionTime } from '@/composables/useNextSessionTime';
 
 useHead({
   title: 'Study'

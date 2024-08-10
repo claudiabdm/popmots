@@ -1,21 +1,21 @@
-import type { Card } from "@/types";
+import type { FlashCard, UserCard } from "@/types";
 import type { State } from "ts-fsrs";
 
 export interface Store {
-    totalCards: Card[],
+    userCards: UserCard[],
 
-    readonly dueCards: Card[],
-    readonly learningCards: Card<State.Learning>[],
-    readonly learningTotalCards: Card<State.Learning>[],
-    readonly newCards: Card<State.New>[],
-    readonly newTotalCards: Card<State.New>[],
-    readonly reviewCards: Card<State.Review>[],
-    readonly reviewTotalCards: Card<State.Review>[],
-    readonly relearningCards: Card<State.Relearning>[],
-    readonly relearningTotalCards: Card<State.Relearning>[],
+    readonly dueCards: UserCard[],
+    readonly learningCards: UserCard<State.Learning>[],
+    readonly learninguserCards: UserCard<State.Learning>[],
+    readonly newCards: UserCard<State.New>[],
+    readonly newuserCards: UserCard<State.New>[],
+    readonly reviewCards: UserCard<State.Review>[],
+    readonly reviewuserCards: UserCard<State.Review>[],
+    readonly relearningCards: UserCard<State.Relearning>[],
+    readonly relearninguserCards: UserCard<State.Relearning>[],
 
     initialTotal: number,
-    currentCard: Card | undefined,
+    currentCard: FlashCard | undefined,
     isLoading: boolean,
 
     settings: {
@@ -23,4 +23,4 @@ export interface Store {
     }
 }
 
-export type LocalStore = Pick<Store, 'totalCards' | 'settings'>
+export type LocalStore = Pick<Store, 'userCards' | 'settings'>
