@@ -14,15 +14,15 @@
 <style lang="scss">
 .copyright {
     width: 100%;
+    height: 50px;
     color: var(--secondary);
-    margin: var(--space-xl) 0;
+    margin: 0;
     font-size: var(--font--1);
     font-weight: 400;
     text-align: center;
     z-index: 10;
 
     a {
-        color: var(--primary-light);
 
         &:hover {
             color: var(--primary);

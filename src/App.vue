@@ -2,22 +2,28 @@
 import { useHead } from '@unhead/vue'
 import { RouterView } from 'vue-router'
 import TheHeader from './components/TheHeader.vue';
+import TheLoadingScreen from './components/TheLoadingScreen.vue';
 import { useStore } from './data';
-import LogoLoading from './components/LogoLoading.vue';
-
-const store = useStore();
-store.initStore()
 
 useHead({
   titleTemplate: title => `${title === 'Home' ? 'PopMots' : `${title} | PopMots`}`,
 })
+
+const store = useStore();
+store.initStore();
 </script>
 
 <template>
-  <div class="app">
+  <TheLoadingScreen
+    v-if="store.isLoading.value"
+    :isLoading="store.isLoading.value"
+  />
+  <div
+    class="app"
+    v-else
+  >
     <TheHeader />
     <main class="main">
-      <LogoLoading />
       <RouterView />
     </main>
   </div>

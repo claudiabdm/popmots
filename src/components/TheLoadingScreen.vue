@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { useStore } from '@/data';
 import CopyRight from './CopyRight.vue';
 
-const { isLoading = true } = useStore();
+defineProps<{
+    isLoading: boolean
+}>()
 </script>
 <template>
     <Transition>
@@ -13,6 +14,8 @@ const { isLoading = true } = useStore();
             <svg
                 id="logo"
                 class="logo"
+                width="250"
+                height="250"
                 viewBox="0 0 450 450"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
