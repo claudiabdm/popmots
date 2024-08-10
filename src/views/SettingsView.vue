@@ -10,13 +10,9 @@ useHead({
   title: 'Settings'
 })
 
-
 const { userCards, settings, setNewCardsPerDay, resetStore } = useStore();
 
-
 const newCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
-
-const isSaving = ref<boolean>();
 
 onMounted(() => {
   newCardsPerDayInput.value = settings.value.newCardsPerDay
@@ -26,6 +22,7 @@ watch(() => settings.value.newCardsPerDay, (value) => {
   newCardsPerDayInput.value = value
 })
 
+const isSaving = ref<boolean>();
 const actionState = computed(() => isSaving.value == null
   ?
   'primary' : isSaving.value === false
@@ -39,16 +36,17 @@ const saveState = computed(() => isSaving.value == null
     'Saving...' : 'Saved!')
 
 
-const resetActionState = computed(() => isSaving.value == null
+const isResetting = ref<boolean>();
+const resetActionState = computed(() => isResetting.value == null
   ?
-  'hard' : isSaving.value === false
+  'hard' : isResetting.value === false
     ?
     'easy' : 'hard'
 )
 
-const resetState = computed(() => isSaving.value == null
+const resetState = computed(() => isResetting.value == null
   ?
-  'Reset all' : isSaving.value == true
+  'Reset all cards' : isResetting.value == true
     ?
     'Reseting...' : 'Reset!'
 )
@@ -74,11 +72,11 @@ function submitForm(e: Event) {
 
 
 function reset() {
-  if (confirm('Are you sure you want to reset all cards?')) {
-    isSaving.value = true
+  if (confirm('Are you sure you want to reset all cards?\nThis will erase all progress and settings.')) {
+    isResetting.value = true
     resetStore()
-    setTimeout(() => isSaving.value = false, 500)
-    setTimeout(() => isSaving.value = undefined, 2000)
+    setTimeout(() => isResetting.value = false, 500)
+    setTimeout(() => isResetting.value = undefined, 2000)
   }
 }
 
