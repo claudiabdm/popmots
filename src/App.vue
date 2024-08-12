@@ -6,7 +6,7 @@ import TheLoadingScreen from './components/TheLoadingScreen.vue';
 import { useStore } from './data';
 
 useHead({
-  titleTemplate: title => `${title === 'Home' ? 'PopMots' : `${title} | PopMots`}`,
+  titleTemplate: title => `${title == null || title === 'Home' ? 'PopMots' : `${title} | PopMots`}`,
 })
 
 const store = useStore();
