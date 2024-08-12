@@ -3,9 +3,9 @@ import { useStore } from '@/data';
 import { computed } from 'vue';
 import ProgressBarBase from './ProgressBarBase.vue';
 
-const { userCards, reviewuserCards } = useStore();
+const { userCards, reviewUserCards } = useStore();
 
-const valueNow = computed(() => reviewuserCards.value.length);
+const valueNow = computed(() => reviewUserCards.value.length);
 const valueMax = computed(() => userCards.value.length);
 </script>
 <template>

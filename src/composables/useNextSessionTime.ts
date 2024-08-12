@@ -25,16 +25,23 @@ export function useNextSessionTime() {
             const sorted = [...store.userCards.value].sort((a, b) => sortByDate(a.schedule.due, b.schedule.due))
             const firstDue = sorted?.[0].schedule.due ?? undefined;
             const now = new Date();
-            if (firstDue) {
+            // if firstDue is in the future
+            if (firstDue > now) {
+                store.setIsSessionReady(false)
                 const time = firstDue.getTime() - now.getTime();
                 const days = Math.floor(time / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((time % (1000 * 60)) / (1000));
                 nextSessionText.value = `Next session in ${days}d ${hours}h ${minutes}m ${seconds}s`
+            } else {
+                // if firstDue is in the past, session is ready
+                nextSessionText.value = undefined;
+                store.setIsSessionReady(true)
             }
         } else {
-            nextSessionText.value = undefined
+            nextSessionText.value = undefined;
+            store.setIsSessionReady(true)
         }
     }
 

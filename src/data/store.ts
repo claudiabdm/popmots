@@ -16,22 +16,22 @@ export const f = fsrs(params);
 
 const store: Store = reactive({
     userCards: [],
+    learningUserCards: computed(() => filterCardsByState(store.userCards, State.Learning)),
+    newUserCards: computed(() => filterCardsByState(store.userCards, State.New)),
+    reviewUserCards: computed(() => filterCardsByState(store.userCards, State.Review)),
+    relearningUserCards: computed(() => filterCardsByState(store.userCards, State.Relearning)),
 
-    learninguserCards: computed(() => filterCardsByState(store.userCards, State.Learning)),
-    newuserCards: computed(() => filterCardsByState(store.userCards, State.New)),
-    reviewuserCards: computed(() => filterCardsByState(store.userCards, State.Review)),
-    relearninguserCards: computed(() => filterCardsByState(store.userCards, State.Relearning)),
 
-
-    dueCards: computed(() => store.userCards
+    dueCards: computed(() => store.isSessionReady ? store.userCards
         .filter(card => overDue(card.schedule))
-        .sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview))
+        .sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview)) : []
     ),
-
     learningCards: computed(() => filterCardsByState(store.dueCards, State.Learning)),
     newCards: computed(() => filterCardsByState(store.dueCards, State.New)),
     reviewCards: computed(() => filterCardsByState(store.dueCards, State.Review)),
     relearningCards: computed(() => filterCardsByState(store.dueCards, State.Relearning)),
+    sessionTotalCards: 0,
+    isSessionReady: false,
 
     currentCard: computed(() => {
         if (store.dueCards.length > 0) {
@@ -44,11 +44,12 @@ const store: Store = reactive({
         return undefined
     }),
 
-    initialTotal: 0,
     isLoading: true,
+
     settings: {
         newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
-    }
+    },
+
 });
 
 export function useStore() {
@@ -64,7 +65,7 @@ export function useStore() {
     function setInitialValues(localStore: LocalStore) {
         store.userCards = localStore.userCards;
         store.settings = localStore.settings;
-        store.initialTotal = store.dueCards.length;
+        setIsSessionReady(store.userCards.length > 0);
         setTimeout(() => store.isLoading = false, 1000);
     }
 
@@ -106,11 +107,23 @@ export function useStore() {
         setInitialValues(localStore)
     }
 
+    function setIsSessionReady(value: boolean) {
+        store.isSessionReady = value;
+        // Set initial session total cards based on the total number of due cards
+        if (store.isSessionReady && store.sessionTotalCards === 0) {
+            store.sessionTotalCards = store.dueCards.length;
+        }
+        // Set value back to 0 when session is over or not ready
+        if (!store.isSessionReady && store.sessionTotalCards > 0) {
+            store.sessionTotalCards = 0;
+        }
+    }
+
     return {
         ...toRefs(store),
         initStore,
-
         setNewCardsPerDay,
+        setIsSessionReady,
         rateCard,
         resetStore
     }
