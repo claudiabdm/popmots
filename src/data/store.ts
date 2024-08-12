@@ -56,12 +56,12 @@ export function useStore() {
         if (store.userCards.length === 0) {
             onMounted(() => {
                 const localStore = loadLocalStore();
-                setInitialValuesFromLocal(localStore)
+                setInitialValues(localStore)
             })
         }
     }
 
-    function setInitialValuesFromLocal(localStore: LocalStore) {
+    function setInitialValues(localStore: LocalStore) {
         store.userCards = localStore.userCards;
         store.settings = localStore.settings;
         store.initialTotal = store.dueCards.length;
@@ -80,9 +80,8 @@ export function useStore() {
         }
     }
 
-    function setuserCards(cards: UserCard[]) {
+    function setUserCards(cards: UserCard[]) {
         store.userCards = cards;
-        store.initialTotal = store.dueCards.length;
         updateLocalStore(store.userCards, 'userCards');
     }
 
@@ -90,21 +89,21 @@ export function useStore() {
         store.settings.newCardsPerDay = newCardsPerDay;
         const updatedCards = updateNewCardsPerDay(store.userCards, newCardsPerDay);
         updateLocalStore(store.settings, 'settings');
-        setuserCards(updatedCards);
+        updateLocalStore(updatedCards, 'userCards');
+        setInitialValues({ userCards: updatedCards, settings: store.settings });
     }
 
     function updateCard(name: string, card: UserCard) {
         const index = store.userCards.findIndex(c => c.name === name);
         store.userCards[index] = card;
-        setuserCards(store.userCards);
+        setUserCards(store.userCards);
     }
 
     function resetStore() {
         store.isLoading = true;
         store.userCards = [];
         const localStore = resetLocalStore();
-        setInitialValuesFromLocal(localStore)
-        store.isLoading = false;
+        setInitialValues(localStore)
     }
 
     return {
