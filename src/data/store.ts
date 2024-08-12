@@ -1,6 +1,6 @@
-import { computed, onMounted, reactive, toRefs } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, toRefs, watch } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { filterCardsByState, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
+import { createNextSessionText, filterCardsByState, getFirstDue, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { LocalStore, Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
 import { dictionary } from 'most-common-words-fr-dict-generator';
@@ -21,28 +21,22 @@ const store: Store = reactive({
     reviewUserCards: computed(() => filterCardsByState(store.userCards, State.Review)),
     relearningUserCards: computed(() => filterCardsByState(store.userCards, State.Relearning)),
 
-
-    dueCards: computed(() => store.isSessionReady ? store.userCards
-        .filter(card => overDue(card.schedule))
-        .sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview)) : []
+    dueCards: computed(() => store.userCards
+        .filter(card => overDue(card.schedule, new Date(store.now)))
+        .sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview))
     ),
     learningCards: computed(() => filterCardsByState(store.dueCards, State.Learning)),
     newCards: computed(() => filterCardsByState(store.dueCards, State.New)),
     reviewCards: computed(() => filterCardsByState(store.dueCards, State.Review)),
     relearningCards: computed(() => filterCardsByState(store.dueCards, State.Relearning)),
     sessionTotalCards: 0,
-    isSessionReady: false,
+    currentCard: undefined,
+    isSessionGoing: false,
 
-    currentCard: computed(() => {
-        if (store.dueCards.length > 0) {
-            const current = store.dueCards[0];
-            const entries = dictionary.get(current.name)
-            if (entries) {
-                return { ...store.dueCards[0], entries }
-            }
-        }
-        return undefined
-    }),
+    intervalId: undefined,
+    now: Date.now(),
+
+    nextSessionText: undefined,
 
     isLoading: true,
 
@@ -58,27 +52,50 @@ export function useStore() {
             onMounted(() => {
                 const localStore = loadLocalStore();
                 setInitialValues(localStore)
+                store.intervalId = setInterval(() => store.now = Date.now(), 1000) as unknown as number;
             })
+            watch(() => store.dueCards, (newVal, oldVal) => {
+                const isSessionGoing = store.isSessionGoing;
+                // Current session finishes when there are no due cards
+                if (isSessionGoing === true && newVal.length === 0) {
+                    store.isSessionGoing = false;
+                    store.sessionTotalCards = 0;
+                }
+                // A new session starts when there are due cards again
+                if (isSessionGoing === false && newVal.length > 0) {
+                    store.isSessionGoing = true;
+                    store.sessionTotalCards = newVal.length;
+                }
+
+                // Update next session text while waiting for more due cards
+                if (store.isSessionGoing === false) {
+                    store.nextSessionText = createNextSessionText(getFirstDue(store.userCards).schedule.due, new Date(store.now))
+                } else {
+                    // Stop updating and set undefined when a session is in progress
+                    if (store.nextSessionText) {
+                        store.nextSessionText = undefined
+                    }
+                }
+
+                // Session cards increases when a new card is due
+                // This can occur when a session is on and a new card is due
+                if (newVal.length > oldVal.length) {
+                    store.sessionTotalCards = newVal.length;
+                }
+
+                // Current card is the first due
+                setCurrentCard(newVal?.[0]);
+            })
+            onUnmounted(() => {
+                clearInterval(store.intervalId)
+            });
         }
     }
 
     function setInitialValues(localStore: LocalStore) {
         store.userCards = localStore.userCards;
         store.settings = localStore.settings;
-        setIsSessionReady(store.userCards.length > 0);
         setTimeout(() => store.isLoading = false, 1000);
-    }
-
-    function rateCard(grade: Grade) {
-        if (store.currentCard) {
-            const fsrsCard = unmassageCard(store.currentCard.schedule);
-            if (fsrsCard) {
-                const schedulingCards = f.repeat(fsrsCard, new Date());
-                const { card } = schedulingCards[grade];
-                const updatedSchedule = massageCard({ ...card, cid: store.currentCard.name });
-                updateCard(store.currentCard.name, { ...store.currentCard, schedule: updatedSchedule });
-            }
-        }
     }
 
     function setUserCards(cards: UserCard[]) {
@@ -94,10 +111,32 @@ export function useStore() {
         setInitialValues({ userCards: updatedCards, settings: store.settings });
     }
 
+    function setCurrentCard(card?: UserCard) {
+        if (card) {
+            if (card.name !== store.currentCard?.name) {
+                store.currentCard = { ...card, entries: dictionary.get(card.name) ?? [] };
+            }
+        } else {
+            store.currentCard = undefined;
+        }
+    }
+
     function updateCard(name: string, card: UserCard) {
         const index = store.userCards.findIndex(c => c.name === name);
         store.userCards[index] = card;
         setUserCards(store.userCards);
+    }
+
+    function rateCard(grade: Grade) {
+        if (store.currentCard) {
+            const fsrsCard = unmassageCard(store.currentCard.schedule);
+            if (fsrsCard) {
+                const schedulingCards = f.repeat(fsrsCard, new Date());
+                const { card } = schedulingCards[grade];
+                const updatedSchedule = massageCard({ ...card, cid: store.currentCard.name });
+                updateCard(store.currentCard.name, { ...store.currentCard, schedule: updatedSchedule });
+            }
+        }
     }
 
     function resetStore() {
@@ -107,23 +146,10 @@ export function useStore() {
         setInitialValues(localStore)
     }
 
-    function setIsSessionReady(value: boolean) {
-        store.isSessionReady = value;
-        // Set initial session total cards based on the total number of due cards
-        if (store.isSessionReady && store.sessionTotalCards === 0) {
-            store.sessionTotalCards = store.dueCards.length;
-        }
-        // Set value back to 0 when session is over or not ready
-        if (!store.isSessionReady && store.sessionTotalCards > 0) {
-            store.sessionTotalCards = 0;
-        }
-    }
-
     return {
         ...toRefs(store),
         initStore,
         setNewCardsPerDay,
-        setIsSessionReady,
         rateCard,
         resetStore
     }

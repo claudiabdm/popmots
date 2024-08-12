@@ -8,14 +8,12 @@ import StudyCard from '@/components/StudyCard.vue';
 import StudyRatingButtons from '@/components/StudyRatingButtons.vue';
 import { ref, watch } from 'vue';
 import { useStore } from '@/data';
-import { useNextSessionTime } from '@/composables/useNextSessionTime';
 
 useHead({
   title: 'Study'
 })
 
-const { currentCard } = useStore()
-const nextSessionTime = useNextSessionTime()
+const { currentCard, nextSessionText } = useStore()
 
 const isFlipped = ref(false);
 
@@ -59,15 +57,15 @@ function flipCard() {
       <ButtonButton
         class="study__button"
         v-if="!isFlipped"
-        :icon-name="nextSessionTime ? undefined : 'study'"
-        :disabled="Boolean(nextSessionTime)"
+        :icon-name="nextSessionText ? undefined : 'study'"
+        :disabled="Boolean(nextSessionText)"
         @click="flipCard"
       >
         <span
-          v-if="nextSessionTime"
+          v-if="nextSessionText"
           class="study__time"
         >
-          {{ nextSessionTime }}
+          {{ nextSessionText }}
         </span>
         <template v-else>
           Show answer

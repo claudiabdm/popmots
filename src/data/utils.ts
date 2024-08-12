@@ -130,8 +130,21 @@ export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     return newCards;
 }
 
-export function overDue(schedule: ScheduleCard) {
-    return new Date() > new Date(schedule.due);
+export function getFirstDue(cards: UserCard[]) {
+    return cards.sort((a, b) => sortByDate(a.schedule.due, b.schedule.due))[0];
+}
+
+export function overDue(schedule: ScheduleCard, now: Date = new Date()) {
+    return now > new Date(schedule.due);
+}
+
+export function createNextSessionText(toDate: Date, now: Date = new Date()) {
+    const time = toDate.getTime() - now.getTime();
+    const days = Math.floor(time / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((time % (1000 * 60)) / (1000));
+    return `Next session in ${days}d ${hours}h ${minutes}m ${seconds}s`
 }
 
 export function filterCardsByState<T extends State>(cards: UserCard<State>[], state: T) {

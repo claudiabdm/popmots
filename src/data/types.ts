@@ -15,11 +15,15 @@ export interface Store {
     readonly newUserCards: UserCard<State.New>[],
     readonly reviewUserCards: UserCard<State.Review>[],
     readonly relearningUserCards: UserCard<State.Relearning>[],
-    sessionTotalCards: number,
     currentCard: FlashCard | undefined,
+    isSessionGoing: boolean,
+    sessionTotalCards: number,
+    nextSessionText: string | undefined,
 
     isLoading: boolean,
-    isSessionReady: boolean
+
+    now: number,
+    intervalId: number | undefined,
 
     settings: {
         newCardsPerDay: number,

@@ -11,19 +11,22 @@ ChartJS.defaults.font.weight = 'bolder'
 ChartJS.defaults.font.size = 14
 
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-const TODAY = (new Date()).toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
-const TODAY_INDEX = DAYS.indexOf(TODAY);
-const DAY_LABELS: string[] = DAYS.map((_, i) => DAYS[(TODAY_INDEX + i) % DAYS.length])
 
 const store = useStore();
 
 const canvas = ref<HTMLCanvasElement>();
 
+// TODO
+const labels = computed(() => {
+  const today = new Date(store.now.value).toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
+  const todayIndex = DAYS.indexOf(today);
+  return DAYS.map((_, i) => DAYS[(todayIndex + i) % DAYS.length]);
+})
 
 const due7days = computed(() => {
   const dueArr = new Array<number>(7).fill(0);
-  const now = new Date();
-  const dates = dueArr.map((_, i) => new Date(now.getTime() + i * DAY_IN_MILLISECONDS));
+  const now = store.now;
+  const dates = dueArr.map((_, i) => new Date(now.value + i * DAY_IN_MILLISECONDS));
   for (const card of store.userCards.value) {
     // if card is due after 7 days, skip
     if (card.schedule.due > dates[6]) continue;
@@ -56,7 +59,7 @@ onMounted(() => {
     new ChartJS(canvas.value, {
       type: 'bar',
       data: {
-        labels: DAY_LABELS,
+        labels: labels.value,
         datasets: [{
           label: '7 days review forecast',
           data: due7days.value,

@@ -9,13 +9,14 @@ import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
 import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
 import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
-import { useNextSessionTime } from '@/composables/useNextSessionTime';
+import { useStore } from '@/data';
 
 useHead({
   title: 'Home'
 })
 
-const nextSessionTime = useNextSessionTime()
+const { nextSessionText } = useStore();
+
 </script>
 
 <template>
@@ -40,17 +41,17 @@ const nextSessionTime = useNextSessionTime()
       <ProgressBarCurrent class="study__progress" />
       <ProgressSummaryCurrent />
       <ButtonLink
-        :class="['home__button', { 'home__button--disabled': Boolean(nextSessionTime) }]"
+        :class="['home__button', { 'home__button--disabled': Boolean(nextSessionText) }]"
         to="/study"
         action="easy"
-        :icon-name="nextSessionTime ? undefined : 'study'"
-        :disabled="Boolean(nextSessionTime)"
+        :icon-name="nextSessionText ? undefined : 'study'"
+        :disabled="Boolean(nextSessionText)"
       >
         <span
-          v-if="nextSessionTime"
+          v-if="nextSessionText"
           class="home__time"
         >
-          {{ nextSessionTime }}
+          {{ nextSessionText }}
         </span>
         <template v-else>
           Go to study
