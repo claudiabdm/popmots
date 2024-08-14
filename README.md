@@ -1,4 +1,4 @@
-# 🚧 PopMots!
+# PopMots!
 
 ![PopMots logo](./public/logo-horizontal.png)
 
