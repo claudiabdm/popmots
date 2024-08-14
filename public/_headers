@@ -1,0 +1,6 @@
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+/audios/*
+  Content-Type: audio/mpeg
+  X-Content-Type-Options: nosniff

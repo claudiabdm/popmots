@@ -18,11 +18,13 @@ const pronunAudio = ref();
 onMounted(() => {
     props.entries?.then(res => {
         wordEntries.value = res;
-        pronunAudio.value = res[0]?.pronunciation_mp3 ? new Audio(res[0]?.pronunciation_mp3) : undefined;
+
+        const pronunFile = res[0]?.pronunciation_mp3?.split('/').pop();
+        pronunAudio.value = pronunFile ? new Audio(`/${pronunFile}`) : undefined;
         pronunAudio.value?.load()
         pronunAudio.value?.addEventListener('play', handlePlay);
         pronunAudio.value?.addEventListener('pause', handlePlay);
-    });
+    })
 })
 
 onUnmounted(() => {

@@ -22,7 +22,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] (partial) PWA for offline use
 - [x] ~10000 most common words
 - [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
-- [ ] Local audio
+- [ ] (wip) Local audio
 - [ ] Option to login/signup
 
 ## Tech Stack
