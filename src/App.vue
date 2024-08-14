@@ -14,13 +14,10 @@ store.initStore();
 </script>
 
 <template>
-  <TheLoadingScreen
-    v-if="store.isLoading.value"
-    :isLoading="store.isLoading.value"
-  />
+  <TheLoadingScreen :isLoading="store.isLoading.value" />
   <div
     class="app"
-    v-else
+    v-if="!store.isLoading.value"
   >
     <TheHeader />
     <main class="main">

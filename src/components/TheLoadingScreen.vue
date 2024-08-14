@@ -31,7 +31,7 @@ defineProps<{
                     y="80"
                     width="290"
                     height="290"
-                    rx="20"
+                    rx="40"
                     fill="white"
                     stroke="#6366F1"
                     stroke-width="10"
@@ -58,9 +58,9 @@ defineProps<{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    border-radius: 20px;
+    border-radius: 0;
     color: var(--primary);
-    background-color: #fff;
+    background-color: var(--primary);
     font-size: var(--font-4);
     font-weight: 700;
     user-select: none;
@@ -70,13 +70,17 @@ defineProps<{
     &::before {
         content: '';
         position: absolute;
-        inset: 0;
+        inset: var(--space-xs) 0;
         margin: 10px;
         background-color: #fff;
-        border-radius: 10px;
+        border-radius: 50px;
         border: 5px solid var(--secondary-light);
         animation: borderColor 1s alternate infinite;
         z-index: 10;
+
+        @media screen and (min-width: $screen-s) {
+            inset: 0;
+        }
     }
 
     @keyframes backgroundColor {
