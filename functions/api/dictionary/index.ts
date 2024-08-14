@@ -1,12 +1,5 @@
 import type { Dictionary, DictionaryWord } from "most-common-words-fr-dict-generator/types";
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'HEAD,POST,OPTIONS',
-    'Access-Control-Max-Age': '86400', // optional 
-    'Access-Control-Allow-Headers': 'Content-Type'
-};
-
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
@@ -27,15 +20,11 @@ export default {
                         }, new Map() as Dictionary);
                         if (word === 'keys') {
                             const keys = [...dictionary.keys()];
-                            return new Response(JSON.stringify(keys), {
-                                headers: { ...corsHeaders },
-                            })
+                            return new Response(JSON.stringify(keys))
                         } else {
                             const wordEntries = dictionary.get(word);
                             if (wordEntries) {
-                                return new Response(JSON.stringify(wordEntries), {
-                                    headers: { ...corsHeaders },
-                                })
+                                return new Response(JSON.stringify(wordEntries))
                             }
                         }
                     }
