@@ -21,7 +21,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Set the number of new cards per day
 - [x] PWA for offline use
 - [x] ~10000 most common words
-- [ ] (wip) Connected to dictionary API
+- [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
 - [ ] Local audio
 - [ ] Option to login/signup
 
