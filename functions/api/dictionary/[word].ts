@@ -1,26 +1,27 @@
-import type { Dictionary, DictionaryWord } from "most-common-words-fr-dict-generator/types";
+import type { WordEntries } from '../../../src/types';
 
 export async function onRequestGet({ params, env }) {
-    const word = decodeURI(params.word?.split('/')[2]);
+    const word = decodeURI(params.word);
     if (word) {
-        const obj = await env.DICTIONARY?.get('10000-most-common-words-en-fr-dict.json');
-        const dictionaryJson = await obj?.json();
-        if (dictionaryJson) {
-            const entries = Object.entries(dictionaryJson) as unknown as Array<[string, Array<DictionaryWord>]>;
-            const dictionary: Dictionary = entries.reduce((acc, curr) => {
-                acc.set(curr[0], curr[1]);
-                return acc;
-            }, new Map() as Dictionary);
-            if (word === 'keys') {
-                const keys = [...dictionary.keys()];
-                return new Response(JSON.stringify(keys))
-            } else {
-                const wordEntries = dictionary.get(word);
-                if (wordEntries) {
-                    return new Response(JSON.stringify(wordEntries))
-                }
-            }
+        console.log(`Word: ${word}`);
+        const wordEntries = await env.DB.prepare(`SELECT * FROM Dictionary WHERE word = "${word}";`).all();
+        if (wordEntries) {
+            const wordEntriesFormatted: WordEntries[] = wordEntries.results.map(entry => {
+                return ({
+                    ...entry,
+                    senses: entry.senses === 'undefined' || entry.senses == null ? [] : JSON.parse(entry.senses),
+                    head: entry.head === 'undefined' || entry.head == null ? [] : JSON.parse(entry.head)
+                })
+            });
+            return new Response(JSON.stringify(wordEntriesFormatted, replacer))
         }
     }
     return new Response(`"${word}" word not found in dictionary`, { status: 404 });
-};
+}
+
+function replacer(_, value) {
+    if (typeof value === "string") {
+        return value.replace(/''/g, "'");
+    }
+    return value;
+}

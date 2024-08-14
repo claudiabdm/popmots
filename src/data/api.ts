@@ -1,6 +1,7 @@
 import type { WordEntries } from "@/types";
 
-const API_URL = import.meta.env.DEV === true ? import.meta.env.VITE_API_URL_DEV : import.meta.env.VITE_API_URL_PROD;
+const API_URL = './api/dictionary';
+
 export async function getKeys() {
     try {
         const keys: string[] = await fetch(`${API_URL}/keys`).then(res => res.json());

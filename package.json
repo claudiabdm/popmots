@@ -11,6 +11,7 @@
     "dev": "vite --host",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "preview-wrangler": "npm run build && npx wrangler pages dev",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
     "build-only": "vite build",
@@ -28,6 +29,7 @@
     "vue-router": "^4.3.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240806.0",
     "@playwright/test": "^1.44.1",
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
