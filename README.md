@@ -19,7 +19,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Rate flashcards by hard, good or easy to remember
 - [x] 7 day forecast of due cards
 - [x] Set the number of new cards per day
-- [x] PWA for offline use
+- [x] (partial) PWA for offline use
 - [x] ~10000 most common words
 - [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
 - [ ] Local audio
@@ -32,3 +32,6 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [TypeScript](https://www.typescriptlang.org/)
 - [Chart.js](https://www.chartjs.org/)
 - [Spaced Repetition Scheduler](https://github.com/open-spaced-repetition/ts-fsrs)
+- [Cloudflare Pages](https://pages.cloudflare.com)
+- [Cloudflare Functions](https://developers.cloudflare.com/pages/functions/)
+- [Cloudflare D1 database](https://developers.cloudflare.com/d1/)
