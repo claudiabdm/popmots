@@ -58,7 +58,7 @@ export async function loadLocalStore() {
 async function loadLocalCards(settings?: Store['settings']): Promise<Store['userCards']> {
     const localCards = localStorage.getItem('userCards');
     const localCardsParsed: Store['userCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
-    if (localCardsParsed) {
+    if (localCardsParsed && localCardsParsed?.length > 1) {
         return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
     } else {
         const allCards = await createAllCards(settings?.newCardsPerDay);
