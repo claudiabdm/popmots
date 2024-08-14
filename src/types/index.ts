@@ -17,5 +17,5 @@ export interface UserCard<T extends State = State> {
 }
 export type WordEntries = Array<DictionaryWord>;
 export interface FlashCard extends UserCard {
-    entries: WordEntries
+    entries: Promise<WordEntries>
 }

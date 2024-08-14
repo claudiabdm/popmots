@@ -3,23 +3,26 @@ import type { WordEntries } from '@/types';
 import ButtonButton from './ButtonButton.vue';
 import StudyCardBase from './StudyCardBase.vue';
 import StudyCardTitle from './StudyCardTitle.vue';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 interface Props {
     name: string
-    entries: WordEntries
+    entries: Promise<WordEntries>
 }
 
-
 const props = defineProps<Props>();
-
 const paused = ref(false);
-const pronunAudio = computed(() => props.entries[0].pronunciation_mp3 ? new Audio(props.entries[0].pronunciation_mp3) : undefined);
+const wordEntries = ref<WordEntries>([]);
+const pronunAudio = ref();
 
 onMounted(() => {
-    pronunAudio.value?.load()
-    pronunAudio.value?.addEventListener('play', handlePlay);
-    pronunAudio.value?.addEventListener('pause', handlePlay);
+    props.entries?.then(res => {
+        wordEntries.value = res;
+        pronunAudio.value = res[0]?.pronunciation_mp3 ? new Audio(res[0]?.pronunciation_mp3) : undefined;
+        pronunAudio.value?.load()
+        pronunAudio.value?.addEventListener('play', handlePlay);
+        pronunAudio.value?.addEventListener('pause', handlePlay);
+    });
 })
 
 onUnmounted(() => {
@@ -42,7 +45,7 @@ function handlePlay() {
                 <StudyCardTitle>
                     {{ name }}
                     <span class="study-card-back__ipa">
-                        {{ entries[0].ipa }}
+                        {{ wordEntries[0]?.ipa }}
                     </span>
                 </StudyCardTitle>
                 <ButtonButton
@@ -55,7 +58,7 @@ function handlePlay() {
                 />
             </dt>
             <dd
-                v-for="entry in entries"
+                v-for="entry in wordEntries"
                 :key="(entry.senses[0] as any).id + 'entry'"
             >
                 <section class="study-card-back__desc">

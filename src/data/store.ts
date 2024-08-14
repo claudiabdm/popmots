@@ -3,9 +3,8 @@ import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
 import { createNextSessionText, filterCardsByState, getFirstDue, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
 import type { LocalStore, Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
-import { dictionary } from 'most-common-words-fr-dict-generator';
 import type { UserCard } from '@/types';
-
+import { getWordEntries } from './api';
 
 const params = generatorParameters({
     enable_short_term: true,
@@ -49,12 +48,12 @@ const store: Store = reactive({
 export function useStore() {
     function initStore() {
         if (store.userCards.length === 0) {
-            onMounted(() => {
-                const localStore = loadLocalStore();
-                setInitialValues(localStore)
+            onMounted(async () => {
+                const localStore = await loadLocalStore();
+                setInitialValues(localStore);
                 store.intervalId = setInterval(() => store.now = Date.now(), 1000) as unknown as number;
             })
-            watch(() => store.dueCards, (newVal, oldVal) => {
+            watch(() => store.dueCards, async (newVal, oldVal) => {
                 const isSessionGoing = store.isSessionGoing;
                 // Current session finishes when there are no due cards
                 if (isSessionGoing === true && newVal.length === 0) {
@@ -69,7 +68,9 @@ export function useStore() {
 
                 // Update next session text while waiting for more due cards
                 if (store.isSessionGoing === false) {
-                    store.nextSessionText = createNextSessionText(getFirstDue(store.userCards).schedule.due, new Date(store.now))
+                    if (store.userCards.length > 0) {
+                        store.nextSessionText = createNextSessionText(getFirstDue(store.userCards).schedule.due, new Date(store.now))
+                    }
                 } else {
                     // Stop updating and set undefined when a session is in progress
                     if (store.nextSessionText) {
@@ -114,7 +115,8 @@ export function useStore() {
     function setCurrentCard(card?: UserCard) {
         if (card) {
             if (card.name !== store.currentCard?.name) {
-                store.currentCard = { ...card, entries: dictionary.get(card.name) ?? [] };
+                const entries = getWordEntries(card.name);
+                store.currentCard = { ...card, entries };
             }
         } else {
             store.currentCard = undefined;
@@ -139,10 +141,10 @@ export function useStore() {
         }
     }
 
-    function resetStore() {
+    async function resetStore() {
         store.isLoading = true;
         store.userCards = [];
-        const localStore = resetLocalStore();
+        const localStore = await resetLocalStore();
         setInitialValues(localStore)
     }
 

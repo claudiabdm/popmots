@@ -1,8 +1,8 @@
 import type { ScheduleCard, FSRSCard, UserCard } from "@/types";
-import { dictionary } from "most-common-words-fr-dict-generator";
 import { createEmptyCard, State } from "ts-fsrs";
 import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY } from "./constants";
 import type { LocalStore, Store } from "./types";
+import { getKeys } from "./api";
 
 export function massageCard(card: FSRSCard & { cid: string }): ScheduleCard {
     return {
@@ -49,19 +49,19 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
     }
 }
 
-export function loadLocalStore() {
+export async function loadLocalStore() {
     const settings = loadLocalSettings();
-    const userCards = loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
+    const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
     return { settings, userCards };
 }
 
-function loadLocalCards(settings?: Store['settings']): Store['userCards'] {
+async function loadLocalCards(settings?: Store['settings']): Promise<Store['userCards']> {
     const localCards = localStorage.getItem('userCards');
     const localCardsParsed: Store['userCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
     if (localCardsParsed) {
         return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
     } else {
-        const allCards = createAllCards(settings?.newCardsPerDay);
+        const allCards = await createAllCards(settings?.newCardsPerDay);
         updateLocalStore(allCards, 'userCards');
         return allCards;
     }
@@ -87,10 +87,10 @@ export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T
     }, 0)
 }
 
-export function resetLocalStore() {
+export async function resetLocalStore() {
     localStorage.removeItem('userCards');
     localStorage.removeItem('settings');
-    return loadLocalStore();
+    return await loadLocalStore();
 }
 
 export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: number) {
@@ -112,13 +112,13 @@ export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: numb
     }
     return cards;
 }
-export function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
+export async function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     const newCards: UserCard[] = [];
     const now = new Date();
     let newCardsAdded = 0;
     let due = 0;
-    for (const [name] of dictionary) {
-        // if (newCardsAdded >= 2000) break;
+    const names = await getKeys();
+    for (const name of names) {
         // Group cards by new cards per day
         if (newCardsAdded % cardsPerDay === 0) {
             due = now.getTime() + (DAY_IN_MILLISECONDS * (newCardsAdded / cardsPerDay));
