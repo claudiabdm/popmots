@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "include": [
+        "/api/dictionary/*"
+    ],
+    "exclude": [
+        "/favicon.ico"
+    ]
+}
