@@ -19,11 +19,13 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Rate flashcards by hard, good or easy to remember
 - [x] 7 day forecast of due cards
 - [x] Set the number of new cards per day
-- [x] (partial) PWA for offline use
+- [x] PWA and responsive design make it possible to install it in any device
 - [x] ~10000 most common words
 - [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
 - [x] Local audio
-- [ ] Option to login/signup
+- [x] No required login/signups
+- [ ] Option to login/signup for using the same data in different devices
+- [ ] Offline
 
 ## Tech Stack
 
