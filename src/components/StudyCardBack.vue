@@ -20,7 +20,7 @@ onMounted(() => {
         wordEntries.value = res;
 
         const pronunFile = res[0]?.pronunciation_mp3?.split('/').pop();
-        pronunAudio.value = pronunFile ? new Audio(`/${pronunFile}`) : undefined;
+        pronunAudio.value = pronunFile ? new Audio(`/audios/${pronunFile}`) : undefined;
         pronunAudio.value?.load()
         pronunAudio.value?.addEventListener('play', handlePlay);
         pronunAudio.value?.addEventListener('pause', handlePlay);
