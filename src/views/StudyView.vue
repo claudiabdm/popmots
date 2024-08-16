@@ -40,12 +40,10 @@ function flipCard() {
       <ProgressBarCurrent class="study__progress" />
     </ViewHeader>
 
-    <div
-      class="study__cards"
-      v-if="currentCard"
-    >
+    <div class="study__cards">
       <Transition>
         <StudyCard
+          v-if="currentCard"
           :key="currentCard?.name"
           :card="currentCard"
           :is-flipped="isFlipped"
@@ -127,7 +125,7 @@ function flipCard() {
 }
 
 .v-enter-from {
-  opacity: 0;
+  opacity: 1;
   transform: translate3d(200%, 0, 0);
 }
 
