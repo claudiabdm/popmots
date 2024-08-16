@@ -4,6 +4,7 @@ import ButtonButton from './ButtonButton.vue';
 import StudyCardBase from './StudyCardBase.vue';
 import StudyCardTitle from './StudyCardTitle.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
+import { Howl } from 'howler';
 
 interface Props {
     name: string
@@ -11,33 +12,46 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const paused = ref(false);
 const wordEntries = ref<WordEntries>([]);
-const pronunAudio = ref();
+const audio = ref<Howl>();
 
 onMounted(() => {
     props.entries?.then(res => {
         wordEntries.value = res;
 
-        const pronunFile = res[0]?.pronunciation_mp3?.split('/').pop();
-        pronunAudio.value = pronunFile ? new Audio(`/audios/${pronunFile}`) : undefined;
-        pronunAudio.value?.load()
-        pronunAudio.value?.addEventListener('play', handlePlay);
-        pronunAudio.value?.addEventListener('pause', handlePlay);
+        if (res[0]?.pronunciation_mp3) {
+            loadAudio(res[0]?.pronunciation_mp3);
+        }
     })
 })
 
 onUnmounted(() => {
-    pronunAudio.value?.removeEventListener('play', handlePlay);
-    pronunAudio.value?.removeEventListener('pause', handlePlay);
+    audio.value?.unload()
 })
 
-function listenPronunciation() {
-    pronunAudio.value?.play()
+function loadAudio(audioFile: string) {
+    // First try to load local audio file from audios folder
+    const audioFilePath = `/audios/${audioFile.split('/').pop()}`;
+    const options = {
+        src: [audioFilePath],
+        autoplay: false,
+        preload: false,
+    }
+    const audioHowl = new Howl({
+        ...options, onloaderror: function () {
+            // if audio file not found, load from remote url
+            audio.value = new Howl({ ...options, src: [audioFile] });
+            audio.value.load();
+        }
+    });
+    audio.value = audioHowl;
+    audio.value.load();
 }
 
-function handlePlay() {
-    paused.value = !paused.value
+function listenPronunciation() {
+    if (!audio.value?.playing()) {
+        audio.value?.play();
+    }
 }
 </script>
 <template>
@@ -51,12 +65,12 @@ function handlePlay() {
                     </span>
                 </StudyCardTitle>
                 <ButtonButton
-                    :class="['study-card-back__btn', { 'study-card-back__btn--playing': paused }]"
-                    :icon-name="paused ? 'paused' : 'play'"
+                    :class="['study-card-back__btn', { 'study-card-back__btn--playing': audio?.playing() }]"
+                    :icon-name="audio?.playing() ? 'paused' : 'play'"
                     action="secondary"
                     aria-label="Listen to pronunciation"
                     @click="listenPronunciation"
-                    :disabled="!pronunAudio"
+                    :disabled="!audio"
                 />
             </dt>
             <dd
