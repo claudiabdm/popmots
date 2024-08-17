@@ -52,8 +52,8 @@ export function useStore() {
         if (store.userCards.length === 0) {
             onMounted(async () => {
                 const localStore = await loadLocalStore();
-                setInitialValues(localStore);
                 store.intervalId = setInterval(() => store.now = Date.now(), 1000) as unknown as number;
+                setInitialValues(localStore);
             })
             watch(() => store.dueCards, async (newVal, oldVal) => {
                 const isSessionGoing = store.isSessionGoing;
