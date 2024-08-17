@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ButtonLink from '@/components/ButtonLink.vue';
+import ButtonRouterLink from '@/components/ButtonRouterLink.vue';
 
 interface Props {
     srOnlyTitle?: boolean,
@@ -17,7 +17,7 @@ withDefaults(defineProps<Props>(), {
         'view-header',
         { 'view-header--with-back-btn': withBackBtn }]
         ">
-        <ButtonLink
+        <ButtonRouterLink
             v-if="withBackBtn"
             icon-name="back"
             action="secondary"

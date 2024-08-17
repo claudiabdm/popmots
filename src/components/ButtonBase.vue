@@ -4,7 +4,7 @@ import Icon from './IconBase.vue';
 import { computed, ref, useAttrs } from 'vue';
 
 export interface ButtonBaseProps {
-    component: 'button' | 'RouterLink',
+    component: 'button' | 'RouterLink' | 'a' | 'label',
     action?: 'primary' | 'hard' | 'good' | 'easy' | 'secondary'
     iconName?: IconName,
     disabled?: boolean

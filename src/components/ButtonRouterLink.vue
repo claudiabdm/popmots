@@ -1,11 +1,8 @@
 <script lang="ts" setup>
+import type { RouterLinkProps } from 'vue-router';
 import { default as ButtonBase, type ButtonBaseProps } from './ButtonBase.vue';
 
-interface Props extends Omit<ButtonBaseProps, 'component'> {
-    href: HTMLAnchorElement['href'],
-    rel?: HTMLAnchorElement['rel']
-    download?: HTMLAnchorElement['download']
-}
+interface Props extends Omit<ButtonBaseProps, 'component'>, RouterLinkProps { }
 
 withDefaults(defineProps<Props>(), {
     action: 'primary',
@@ -15,10 +12,8 @@ withDefaults(defineProps<Props>(), {
 
 <template>
     <ButtonBase
-        component="a"
-        :href="href"
-        :rel="rel"
-        :download="download"
+        component="RouterLink"
+        :to="to"
         :action="action"
         :icon-name="iconName"
         :disabled="disabled"

@@ -3,7 +3,7 @@ import { useHead } from '@unhead/vue'
 import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import SvgIcon from '@/components/IconBase.vue';
-import ButtonLink from '@/components/ButtonLink.vue';
+import ButtonRouterLink from '@/components/ButtonRouterLink.vue';
 import ForecastChart from '@/components/ForecastChart.vue';
 import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
@@ -40,7 +40,7 @@ const { nextSessionText } = useStore();
       <h3 class="home__subtitle">Current session</h3>
       <ProgressBarCurrent class="study__progress" />
       <ProgressSummaryCurrent />
-      <ButtonLink
+      <ButtonRouterLink
         :class="['home__button', { 'home__button--disabled': Boolean(nextSessionText) }]"
         to="/study"
         action="easy"
@@ -56,7 +56,7 @@ const { nextSessionText } = useStore();
         <template v-else>
           Go to study
         </template>
-      </ButtonLink>
+      </ButtonRouterLink>
     </article>
 
 

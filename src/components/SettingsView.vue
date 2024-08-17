@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { useHead } from '@unhead/vue'
 import ButtonButton from '@/components/ButtonButton.vue';
-import ButtonLabelInput from '@/components/ButtonLabelInput.vue';
-import ButtonLink from '@/components/ButtonLink.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import ViewSection from '@/components/ViewSection.vue';
-import { DEFAULT_NEW_CARDS_PER_DAY, useStore, type LocalStore } from '@/data';
+import { DEFAULT_NEW_CARDS_PER_DAY, useStore } from '@/data';
 import { computed, onMounted, ref, watch } from 'vue';
 
 useHead({
@@ -16,11 +14,6 @@ const { userCards, settings, setNewCardsPerDay, resetStore } = useStore();
 
 const newCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
 
-const downloadDataHref = computed(() => {
-  return `data:text/json;charset=utf-8,${encodeURIComponent(
-    JSON.stringify({ userCards: userCards.value, settings: settings.value }),
-  )}`
-})
 onMounted(() => {
   newCardsPerDayInput.value = settings.value.newCardsPerDay
 })
@@ -58,6 +51,22 @@ const resetState = computed(() => isResetting.value == null
     'Reseting...' : 'Reset!'
 )
 
+const isDownloading = ref<boolean>();
+const downloadActionState = computed(() => isDownloading.value == null
+  ?
+  'primary' : isDownloading.value === false
+    ?
+    'easy' : 'hard'
+)
+
+const downloadState = computed(() => isDownloading.value == null
+  ?
+  'Download data' : isDownloading.value == true
+    ?
+    'Downloading...' : 'Downloaded!'
+)
+
+
 function setNewCardsPerDayInput(e: Event) {
   if (e.target instanceof HTMLInputElement) {
     newCardsPerDayInput.value = Number(e.target.value)
@@ -86,23 +95,20 @@ function reset() {
   }
 }
 
-function uploadData(e: Event) {
-  if (e.target instanceof HTMLInputElement) {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fr = new FileReader();
-      fr.readAsText(file)
-      fr.onload = (e: any) => {
-        const data: LocalStore = JSON.parse(e.target.result, (key, value) => {
-          if (key === 'due' || key === 'lastReview') {
-            return new Date(value)
-          }
-          return value;
-        })
-        resetStore(data)
-      }
-    }
-  }
+function downloadData() {
+  isDownloading.value = true
+
+  const href = `data:text/json;charset=utf-8,${encodeURIComponent(
+    JSON.stringify({ userCards: userCards.value, settings: settings.value }),
+  )}`
+
+  const link = document.createElement('a')
+  link.href = href
+  link.download = 'popmots_data.json'
+  link.click()
+
+  setTimeout(() => isDownloading.value = false, 500)
+  setTimeout(() => isDownloading.value = undefined, 2000)
 }
 
 </script>
@@ -143,27 +149,15 @@ function uploadData(e: Event) {
         {{ saveState }}
       </ButtonButton>
 
-      <ButtonLabelInput
+      <ButtonButton
         class="settings__form-submit"
-        type="file"
-        accept=".popmots"
-        name="upload-data"
-        action="secondary"
-        :disabled="isSaving"
-        @change="uploadData"
+        type="button"
+        :action="downloadActionState"
+        :disabled="isDownloading"
+        @click="downloadData"
       >
-        Upload .popmots file
-      </ButtonLabelInput>
-
-      <ButtonLink
-        class="settings__form-submit"
-        download="data.popmots"
-        action="secondary"
-        :disabled="isSaving"
-        :href="downloadDataHref"
-      >
-        Download .popmots file
-      </ButtonLink>
+        {{ downloadState }}
+      </ButtonButton>
 
       <ButtonButton
         class="settings__form-submit"

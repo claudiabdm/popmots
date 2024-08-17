@@ -5,6 +5,7 @@ import type { LocalStore, Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
 import type { UserCard } from '@/types';
 import { getWordEntries } from './api';
+import { useRouter } from 'vue-router';
 
 const params = generatorParameters({
     enable_short_term: true,
@@ -46,6 +47,7 @@ const store: Store = reactive({
 });
 
 export function useStore() {
+    const router = useRouter();
     function initStore() {
         if (store.userCards.length === 0) {
             onMounted(async () => {
@@ -63,7 +65,6 @@ export function useStore() {
                 // A new session starts when there are due cards again
                 if (isSessionGoing === false && newVal.length > 0) {
                     store.isSessionGoing = true;
-                    store.sessionTotalCards = newVal.length;
                 }
 
                 // Update next session text while waiting for more due cards
@@ -81,7 +82,7 @@ export function useStore() {
                 // Session cards increases when a new card is due
                 // This can occur when a session is on and a new card is due
                 if (newVal.length > oldVal.length) {
-                    store.sessionTotalCards = newVal.length;
+                    store.sessionTotalCards = store.sessionTotalCards + (newVal.length - oldVal.length);
                 }
 
                 // Current card is the first due
@@ -105,11 +106,13 @@ export function useStore() {
     }
 
     function setNewCardsPerDay(newCardsPerDay: number) {
-        store.settings.newCardsPerDay = newCardsPerDay;
-        const updatedCards = updateNewCardsPerDay(store.userCards, newCardsPerDay);
-        updateLocalStore(store.settings, 'settings');
-        updateLocalStore(updatedCards, 'userCards');
-        setInitialValues({ userCards: updatedCards, settings: store.settings });
+        if (newCardsPerDay !== store.settings.newCardsPerDay) {
+            store.settings.newCardsPerDay = newCardsPerDay;
+            const updatedCards = updateNewCardsPerDay(store.userCards, newCardsPerDay);
+            updateLocalStore(store.settings, 'settings');
+            updateLocalStore(updatedCards, 'userCards');
+            setInitialValues({ userCards: updatedCards, settings: store.settings });
+        }
     }
 
     function setCurrentCard(card?: UserCard) {
@@ -141,11 +144,12 @@ export function useStore() {
         }
     }
 
-    async function resetStore() {
+    async function resetStore(data?: LocalStore) {
         store.isLoading = true;
         store.userCards = [];
-        const localStore = await resetLocalStore();
+        const localStore = data ?? await resetLocalStore();
         setInitialValues(localStore)
+        router.push({ name: 'home' });
     }
 
     return {
