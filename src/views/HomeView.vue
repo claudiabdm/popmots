@@ -63,7 +63,7 @@ const { nextSessionText } = useStore();
 
     <article class="home__section">
       <h3 class="home__subtitle">7 days review forecast</h3>
-      <ForecastChart />
+      <ForecastChart class="home__chart" />
     </article>
 
     <article class="home__section">
@@ -105,6 +105,10 @@ const { nextSessionText } = useStore();
 
   &__time {
     font-size: var(--font-0);
+  }
+
+  &__chart {
+    height: calc(300px + var(--space-s-l));
   }
 
 }

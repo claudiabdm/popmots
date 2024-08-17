@@ -146,7 +146,6 @@ onMounted(() => {
   &__canvas {
     width: calc(100vw - 25%);
     height: 300px;
-    ;
   }
 }
 </style>
