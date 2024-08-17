@@ -26,6 +26,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Download/Upload popmots data.
 - [x] No required login/signups
 - [ ] Option to login/signup for using the same data in different devices
+- [ ] Improve accessibility
 - [ ] Offline
 
 ## Tech Stack
