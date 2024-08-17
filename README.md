@@ -23,6 +23,7 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] ~10000 most common words
 - [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
 - [x] Local audio
+- [x] Download/Upload popmots data.
 - [x] No required login/signups
 - [ ] Option to login/signup for using the same data in different devices
 - [ ] Offline
