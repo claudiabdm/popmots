@@ -108,7 +108,7 @@ const { nextSessionText } = useStore();
   }
 
   &__chart {
-    height: calc(300px + var(--space-s-l));
+    height: calc(300px + var(--space-s-l) * 2);
   }
 
 }
