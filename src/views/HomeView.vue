@@ -24,6 +24,7 @@ const { nextSessionText } = useStore();
     <ViewHeader>
       <template #title>Your progress</template>
       <RouterLink
+        aria-label="Go to settings"
         to="/settings"
         class="home__link-btn"
       >
