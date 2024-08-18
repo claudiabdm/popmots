@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
+import { useStore } from '@/data';
 import ViewSection from '@/components/ViewSection.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import SvgIcon from '@/components/IconBase.vue';
@@ -9,7 +10,6 @@ import ProgressBarCurrent from '@/components/ProgressBarCurrent.vue';
 import ProgressSummaryTotal from '@/components/ProgressSummaryTotal.vue';
 import ProgressBarTotal from '@/components/ProgressBarTotal.vue';
 import ProgressSummaryCurrent from '@/components/ProgressSummaryCurrent.vue';
-import { useStore } from '@/data';
 
 useHead({
   title: 'Home'
@@ -63,7 +63,7 @@ const { nextSessionText } = useStore();
 
     <article class="home__section">
       <h3 class="home__subtitle">7 days review forecast</h3>
-      <ForecastChart class="home__chart" />
+      <ForecastChart />
     </article>
 
     <article class="home__section">
@@ -106,10 +106,5 @@ const { nextSessionText } = useStore();
   &__time {
     font-size: var(--font-0);
   }
-
-  &__chart {
-    height: calc(300px + var(--space-s-l) * 2);
-  }
-
 }
 </style>
