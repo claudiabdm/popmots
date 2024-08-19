@@ -96,8 +96,13 @@ const chart = shallowRef<ChartJS>();
 
 const due7days = computed(() => {
   const dueArr = new Array<number>(7).fill(0) as [number, number, number, number, number, number, number];
-  const now = store.now;
-  const dates = dueArr.map((_, i) => new Date(now.value + i * DAY_IN_MILLISECONDS));
+  const now = store.now.value;
+  const dates = dueArr.map((_, i) => {
+    const date = new Date(now + i * DAY_IN_MILLISECONDS);
+    const end = date.setHours(23, 59, 59, 999);
+    return new Date(end);
+  });
+
   for (const card of store.userCards.value) {
     // if card is due after 7 days, skip
     if (card.schedule.due > dates[6]) continue;
@@ -129,7 +134,6 @@ watch(due7days, (newVal) => {
   if (chart.value) {
     const oldChartData = [...(chart.value.data.datasets[0].data ?? [])];
     if (newVal.some((v, i) => v !== oldChartData[i])) {
-      console.log('update chart');
       chart.value.data.datasets[0].data = [...newVal];
       nextTick(() => chart.value?.update());
     }
