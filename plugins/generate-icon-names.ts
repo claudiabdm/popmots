@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFile, writeFile } from 'fs';
 import fs from 'fs';
 import path from 'path';
 import { PluginOption } from 'vite';
@@ -51,23 +51,30 @@ function generateIconNamesTsFile(svgFilePath: string, typesFilePath: string = 's
 
     const iconNames: Set<string> = new Set();
 
-    parseString(readFileSync(svgFilePath, 'utf8'), (err, result) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+    readFile(svgFilePath, 'utf8', (err, result) => {
+        consoleError(err)
 
-        const symbols = result?.svg?.symbol || [];
-        for (const symbol of symbols) {
-            const id = symbol.$.id;
-            if (id) {
-                iconNames.add(`"${id}"`);
+        parseString(result, (err, result) => {
+            consoleError(err);
+
+            const symbols = result?.svg?.symbol || [];
+            for (const symbol of symbols) {
+                const id = symbol.$.id;
+                if (id) {
+                    iconNames.add(`"${id}"`);
+                }
             }
-        }
 
-        const iconNamesString = [...iconNames].join(' | ');
-        const typesFileContent = `export type ${typeName} = ${iconNamesString};\n`;
+            const iconNamesString = [...iconNames].join(' | ');
+            const typesFileContent = `export type ${typeName} = ${iconNamesString};\n`;
 
-        fs.writeFileSync(typesFilePath, typesFileContent);
-    })
+            writeFile(typesFilePathResolved, typesFileContent, consoleError);
+        });
+
+    });
+}
+
+function consoleError(err: any) {
+    console.error(err);
+    return;
 }
