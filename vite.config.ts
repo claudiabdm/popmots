@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import generateIconNames from './plugins/generate-icon-names'
+import { generateIconNames } from 'vite-plugin-svg-sprite-names-typescript';
 import { visualizer } from "rollup-plugin-visualizer";
 import { DESCRIPTION, THEME_COLOR, TITLE } from './src/data/constants'
 
@@ -35,7 +35,11 @@ export default defineConfig({
         enabled: true
       }
     }),
-    generateIconNames('./public/sprite.svg'),
+    generateIconNames({
+      svgFilePath: './public/sprite.svg',
+      typesFilePath: './src/types/icon-names.ts',
+      typeName: 'IconName'
+    }),
     visualizer()
   ],
   resolve: {

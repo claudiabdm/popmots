@@ -6,7 +6,6 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
-    "plugins/*.ts",
     "src/data/constants.ts",
   ],
   "compilerOptions": {
