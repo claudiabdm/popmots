@@ -3,42 +3,54 @@ import { computed, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } fr
 import { Chart as ChartJS, BarElement, LinearScale, BarController, CategoryScale, Tooltip, type ChartData, type ChartDataset, type ChartOptions } from 'chart.js'
 import { DAY_IN_MILLISECONDS, useStore } from '@/data';
 import { overDue } from '@/data/utils';
+import { State } from 'ts-fsrs';
 
 ChartJS.register(BarElement, LinearScale, BarController, CategoryScale, Tooltip)
 ChartJS.defaults.font.family = 'Nunito Variable'
 ChartJS.defaults.font.weight = 'bolder'
 ChartJS.defaults.font.size = 14
 
+const ARR_7_LENGTH = [0, 0, 0, 0, 0, 0, 0];
+
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 const primaryColor = 'hsl(239, 90%, 65%)';
-const primaryColorAlpha = 'hsla(239, 90%, 65%, 0.8)';
-const primaryLightColor = 'hsl(239, 90%, 85%)';
-const primaryLightColorAlpha = 'hsla(239, 90%, 85%, 0.8)';
+const primaryColorAlpha = 'hsl(239, 90%, 65%, 0.8)';
+const primaryLightColor = 'hsl(239, 90%, 75%)';
+const primaryLighterColor = 'hsl(239, 90%, 85%)';
+const primaryLighterColorAlpha = 'hsl(239, 90%, 85%, 0.8)';
 const secondaryLightColor = 'hsl(220, 9%, 85%)';
-const secondaryLightColorAlpha = 'hsla(220, 9%, 85%, 0.5)';
+const secondaryLightColorAlpha = 'hsla(220, 9%, 85%, 0.8)';
 
 const labels = (() => {
   const today = new Date().toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
   const todayIndex = DAYS.indexOf(today);
   return DAYS.map((_, i) => DAYS[(todayIndex + i) % DAYS.length]);
 })()
-
+const defaultBarStyle = {
+  barThickness: 30,
+  borderWidth: 2,
+  borderRadius: 10,
+  borderColor: primaryLightColor,
+  borderSkipped: 'bottom',
+}
 const chardData: ChartData<'bar'> = {
   labels,
   datasets: [
     {
-      label: '7 days review forecast',
-      data: [0, 0, 0, 0, 0, 0, 0] as [number, number, number, number, number, number, number],
-      barThickness: 30,
-      borderWidth: 2,
-      borderRadius: 10,
-      borderColor: primaryLightColor,
-      borderSkipped: 'bottom',
-      hoverBorderColor: primaryLightColorAlpha,
+      label: 'new cards',
+      data: ARR_7_LENGTH,
+      ...defaultBarStyle,
+      hoverBackgroundColor: primaryLighterColorAlpha,
+      backgroundColor: primaryLighterColor,
+    } as ChartDataset<'bar'>,
+    {
+      label: 'cards to review',
+      data: ARR_7_LENGTH,
+      ...defaultBarStyle,
       hoverBackgroundColor: primaryColorAlpha,
       backgroundColor: primaryColor,
-    } as ChartDataset<'bar'>
+    } as ChartDataset<'bar'>,
   ],
 }
 
@@ -55,7 +67,7 @@ const chartOptions: ChartOptions = {
       displayColors: false,
       callbacks: {
         title: () => '',
-        label: (context: any) => `${context.parsed.y} cards due`,
+        label: (context: any) => `${context.parsed.y} ${context.dataset.label}`,
       },
       xAlign: 'center',
       yAlign: 'bottom',
@@ -65,6 +77,7 @@ const chartOptions: ChartOptions = {
   },
   scales: {
     x: {
+      stacked: true,
       ticks: {
         color: primaryLightColor,
       },
@@ -73,6 +86,7 @@ const chartOptions: ChartOptions = {
       },
     },
     y: {
+      stacked: true,
       ticks: {
         maxTicksLimit: 5,
         color: primaryLightColor,
@@ -95,9 +109,9 @@ const canvas = ref<HTMLCanvasElement>();
 const chart = shallowRef<ChartJS>();
 
 const due7days = computed(() => {
-  const dueArr = new Array<number>(7).fill(0) as [number, number, number, number, number, number, number];
+  const dueArr = [[...ARR_7_LENGTH], [...ARR_7_LENGTH]];
   const now = store.now.value;
-  const dates = dueArr.map((_, i) => {
+  const dates = ARR_7_LENGTH.map((_, i) => {
     const date = new Date(now + i * DAY_IN_MILLISECONDS);
     const end = date.setHours(23, 59, 59, 999);
     return new Date(end);
@@ -110,7 +124,11 @@ const due7days = computed(() => {
     // add cards to each corresponding due date
     for (let i = 0; i < dates.length; i++) {
       if (overDue(card.schedule, dates[i])) {
-        dueArr[i] += 1;
+        if (card.schedule.state === State.New) {
+          dueArr[0][i] += 1;
+        } else {
+          dueArr[1][i] += 1;
+        }
         break;
       }
     }
@@ -120,7 +138,8 @@ const due7days = computed(() => {
 
 onMounted(() => {
   if (canvas.value) {
-    chardData.datasets[0].data = [...due7days.value];
+    chardData.datasets[0].data = [...due7days.value[0]];
+    chardData.datasets[1].data = [...due7days.value[1]];
     chart.value = new ChartJS(canvas.value, {
       type: 'bar',
       data: chardData,
@@ -134,7 +153,8 @@ watch(due7days, (newVal) => {
   if (chart.value) {
     const oldChartData = [...(chart.value.data.datasets[0].data ?? [])];
     if (newVal.some((v, i) => v !== oldChartData[i])) {
-      chart.value.data.datasets[0].data = [...newVal];
+      chart.value.data.datasets[0].data = [...newVal[0]];
+      chart.value.data.datasets[1].data = [...newVal[1]];
       nextTick(() => chart.value?.update());
     }
   }
