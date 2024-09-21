@@ -27,6 +27,7 @@ export interface Store {
 
     settings: {
         newCardsPerDay: number,
+        totalCardsPerDay: number,
     }
 }
 

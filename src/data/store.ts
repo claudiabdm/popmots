@@ -1,8 +1,8 @@
 import { computed, onMounted, onUnmounted, reactive, toRefs, watch } from 'vue';
 import { fsrs, generatorParameters, State, type Grade } from 'ts-fsrs';
-import { createNextSessionText, filterCardsByState, getFirstDue, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay } from './utils';
+import { createNextSessionText, filterCardsByState, getFirstDue, loadLocalStore, massageCard, overDue, resetLocalStore, sortByDate, unmassageCard, updateLocalStore, updateNewCardsPerDay, updateCardsPerDay } from './utils';
 import type { LocalStore, Store } from './types';
-import { DEFAULT_NEW_CARDS_PER_DAY } from './constants';
+import { DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY } from './constants';
 import type { UserCard } from '@/types';
 import { getWordEntries } from './api';
 import { useRouter } from 'vue-router';
@@ -41,7 +41,8 @@ const store: Store = reactive({
     isLoading: true,
 
     settings: {
-        newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
+        newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY,
+        totalCardsPerDay: DEFAULT_TOTAL_CARDS_PER_DAY
     },
 
 });
@@ -115,6 +116,16 @@ export function useStore() {
         }
     }
 
+    function setTotalCardsPerDay(totalCardsPerDay: number) {
+        if (totalCardsPerDay !== store.settings.totalCardsPerDay) {
+            store.settings.totalCardsPerDay = totalCardsPerDay;
+            const updatedCards = updateCardsPerDay(store.userCards, totalCardsPerDay, store.settings.newCardsPerDay);
+            updateLocalStore(store.settings, 'settings');
+            updateLocalStore(updatedCards, 'userCards');
+            setInitialValues({ userCards: updatedCards, settings: store.settings });
+        }
+    }
+
     function setCurrentCard(card?: UserCard) {
         if (card) {
             if (card.name !== store.currentCard?.name) {
@@ -149,6 +160,8 @@ export function useStore() {
         store.userCards = [];
         const localStore = data ?? await resetLocalStore();
         setInitialValues(localStore)
+        updateLocalStore(localStore.userCards, 'userCards');
+        updateLocalStore(localStore.settings, 'settings');
         router.push({ name: 'home' });
     }
 
@@ -156,6 +169,7 @@ export function useStore() {
         ...toRefs(store),
         initStore,
         setNewCardsPerDay,
+        setTotalCardsPerDay,
         rateCard,
         resetStore
     }

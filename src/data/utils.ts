@@ -1,6 +1,6 @@
 import type { ScheduleCard, FSRSCard, UserCard } from "@/types";
 import { createEmptyCard, State } from "ts-fsrs";
-import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY } from "./constants";
+import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY } from "./constants";
 import type { LocalStore, Store } from "./types";
 import { getKeys } from "./api";
 
@@ -51,7 +51,7 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 
 export async function loadLocalStore() {
     const settings = loadLocalSettings();
-    const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay });
+    const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay, totalCardsPerDay: settings.totalCardsPerDay });
     return { settings, userCards };
 }
 
@@ -59,7 +59,7 @@ async function loadLocalCards(settings?: Store['settings']): Promise<Store['user
     const localCards = localStorage.getItem('userCards');
     const localCardsParsed: Store['userCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
     if (localCardsParsed && localCardsParsed?.length > 1) {
-        return localCardsParsed.map(c => ({ ...c, schedule: copyScheduleCard(c.schedule) }));
+        return updateCardsPerDay(localCardsParsed, settings?.totalCardsPerDay, settings?.newCardsPerDay);
     } else {
         const allCards = await createAllCards(settings?.newCardsPerDay);
         updateLocalStore(allCards, 'userCards');
@@ -68,17 +68,14 @@ async function loadLocalCards(settings?: Store['settings']): Promise<Store['user
 }
 
 function loadLocalSettings(): Store['settings'] {
-    const settings = localStorage.getItem('settings');
-    const settingsParsed: Store['settings'] | undefined = settings ? JSON.parse(settings) : undefined;
-    if (settingsParsed) {
-        return settingsParsed;
-    } else {
-        const settings: Store['settings'] = {
-            newCardsPerDay: DEFAULT_NEW_CARDS_PER_DAY
-        }
-        updateLocalStore(settings, 'settings');
-        return settings;
+    const settingsLS = localStorage.getItem('settings');
+    const settingsParsed: Store['settings'] | undefined = settingsLS ? JSON.parse(settingsLS) : undefined;
+    const settings: Store['settings'] = {
+        newCardsPerDay: settingsParsed?.newCardsPerDay ?? DEFAULT_NEW_CARDS_PER_DAY,
+        totalCardsPerDay: settingsParsed?.totalCardsPerDay ?? DEFAULT_TOTAL_CARDS_PER_DAY
     }
+    updateLocalStore(settings, 'settings');
+    return settings;
 }
 
 export function updateLocalStore<T extends keyof LocalStore>(store: LocalStore[T], propertyName: T) {
@@ -93,7 +90,7 @@ export async function resetLocalStore() {
     return await loadLocalStore();
 }
 
-export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: number) {
+export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: number = DEFAULT_NEW_CARDS_PER_DAY) {
     const cards: UserCard[] = [...userCards].sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview));
     const now = new Date();
     let newCardsAdded = 0;
@@ -112,6 +109,47 @@ export function updateNewCardsPerDay(userCards: UserCard[], newCardsPerDay: numb
     }
     return cards;
 }
+
+export function updateCardsPerDay(userCards: UserCard[], totalCardsPerDay: number = DEFAULT_TOTAL_CARDS_PER_DAY, newCardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
+    const cards: UserCard[] = [...userCards].sort((a, b) => sortByDate(a.schedule.lastReview, b.schedule.lastReview));
+    let reviewCardsDue = new Date();
+    let reviewCardsAdded = 0;
+    let newCardsDue = new Date();
+    let newCardsAdded = 0;
+
+    for (const { schedule } of cards) {
+
+        if (schedule.state === State.New) {
+            if (overDue(schedule, newCardsDue)) {
+                newCardsAdded += 1;
+                schedule.due = newCardsDue;
+            }
+        } else {
+            if (overDue(schedule, reviewCardsDue)) {
+                reviewCardsAdded += 1;
+                schedule.due = reviewCardsDue;
+            }
+        }
+
+        // if the number of new cards for that date reaches the limit
+        // start reschudeling for next day
+        if (newCardsAdded === newCardsPerDay) {
+            newCardsDue = new Date(newCardsDue.getTime() + DAY_IN_MILLISECONDS);
+            newCardsAdded = 0;
+        }
+
+        // if the number of review cards for that date reaches the limit
+        // start reschudeling for next day
+        if (reviewCardsAdded === (totalCardsPerDay - newCardsPerDay)) {
+            reviewCardsDue = new Date(reviewCardsDue.getTime() + DAY_IN_MILLISECONDS);
+            reviewCardsAdded = 0;
+        }
+
+
+    }
+    return cards
+}
+
 export async function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     const newCards: UserCard[] = [];
     const now = new Date();

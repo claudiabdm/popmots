@@ -5,28 +5,33 @@ import ButtonLabelInput from '@/components/ButtonLabelInput.vue';
 import ButtonLink from '@/components/ButtonLink.vue';
 import ViewHeader from '@/components/ViewHeader.vue';
 import ViewSection from '@/components/ViewSection.vue';
-import { DEFAULT_NEW_CARDS_PER_DAY, useStore, type LocalStore } from '@/data';
+import { DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY, useStore, type LocalStore } from '@/data';
 import { computed, onMounted, ref, watch } from 'vue';
+import { updateCardsPerDay } from '@/data/utils';
 
 useHead({
   title: 'Settings'
 })
 
-const { userCards, settings, setNewCardsPerDay, resetStore } = useStore();
+const { userCards, settings, setNewCardsPerDay, setTotalCardsPerDay, resetStore } = useStore();
 
 const newCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
+const totalCardsPerDayInput = ref<number>(DEFAULT_NEW_CARDS_PER_DAY);
 
 const downloadDataHref = computed(() => {
   return `data:text/json;charset=utf-8,${encodeURIComponent(
     JSON.stringify({ userCards: userCards.value, settings: settings.value }),
   )}`
 })
+
 onMounted(() => {
   newCardsPerDayInput.value = settings.value.newCardsPerDay
+  totalCardsPerDayInput.value = settings.value.totalCardsPerDay
 })
 
-watch(() => settings.value.newCardsPerDay, (value) => {
-  newCardsPerDayInput.value = value
+watch(settings, (value) => {
+  newCardsPerDayInput.value = value.newCardsPerDay
+  totalCardsPerDayInput.value = value.totalCardsPerDay
 })
 
 const isSaving = ref<boolean>();
@@ -64,12 +69,20 @@ function setNewCardsPerDayInput(e: Event) {
   }
 }
 
+function setTotalCardsPerDayInput(e: Event) {
+  if (e.target instanceof HTMLInputElement) {
+    totalCardsPerDayInput.value = Number(e.target.value)
+  }
+}
+
 function submitForm(e: Event) {
   if (e.target instanceof HTMLFormElement) {
     isSaving.value = true
     newCardsPerDayInput.value = Number(newCardsPerDayInput.value)
+    totalCardsPerDayInput.value = Number(totalCardsPerDayInput.value)
 
     setNewCardsPerDay(newCardsPerDayInput.value)
+    setTotalCardsPerDay(totalCardsPerDayInput.value)
 
     setTimeout(() => isSaving.value = false, 500)
     setTimeout(() => isSaving.value = undefined, 2000)
@@ -99,6 +112,15 @@ function uploadData(e: Event) {
           }
           return value;
         })
+
+        // patch previous version files
+        if (data.settings.totalCardsPerDay == null) {
+          const settings = { ...data.settings, totalCardsPerDay: DEFAULT_TOTAL_CARDS_PER_DAY }
+          const userCards = updateCardsPerDay(data.userCards, data.settings.totalCardsPerDay, data.settings.newCardsPerDay)
+          data.settings = settings
+          data.userCards = userCards
+        }
+
         resetStore(data)
       }
     }
@@ -120,20 +142,39 @@ function uploadData(e: Event) {
         <label
           class="settings__form-label"
           for="new-cards-per-day"
-        >Number of new
-          cards per
-          day</label>
+        >
+          Number of new cards per day
+        </label>
         <input
           class="settings__form-input"
           id="new-cards-per-day"
           type="number"
           name="new-cards-per-day"
           min="5"
-          :max="userCards.length"
+          :max="totalCardsPerDayInput"
           :value="newCardsPerDayInput"
           @input="setNewCardsPerDayInput"
         />
       </div>
+      <div class="settings__form-group">
+        <label
+          class="settings__form-label"
+          for="total-cards-per-day"
+        >
+          Number of total cards per day
+        </label>
+        <input
+          class="settings__form-input"
+          id="total-cards-per-day"
+          type="number"
+          name="total-cards-per-day"
+          :min="newCardsPerDayInput"
+          :max="userCards.length"
+          :value="totalCardsPerDayInput"
+          @input="setTotalCardsPerDayInput"
+        />
+      </div>
+
       <ButtonButton
         class="settings__form-submit"
         type="submit"
