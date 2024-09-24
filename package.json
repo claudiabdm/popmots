@@ -62,5 +62,10 @@
     "vitest": "^1.6.0",
     "vue-tsc": "^2.0.21",
     "xml2js": "^0.6.2"
+  },
+  "overrides": {
+    "vite-plugin-pwa": {
+      "rollup": "^4.22.4"
+    }
   }
 }
