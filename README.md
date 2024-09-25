@@ -18,17 +18,13 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [x] Schedule cards based on the [fsrs](https://github.com/open-spaced-repetition/free-spaced-repetition-scheduler) spaced repetition algorithm
 - [x] Rate flashcards by hard, good or easy to remember
 - [x] 7 day forecast of due cards
-- [x] Set the number of new cards per day
+- [x] Set the number of new cards and total due cards per day
 - [x] PWA and responsive design make it possible to install it in any device
 - [x] ~10000 most common words
 - [x] Connected to dictionary API (Using Cloudflare functions and D1 database)
 - [x] Local audio
 - [x] Download/Upload popmots data.
 - [x] No required login/signups
-- [ ] Option to login/signup for using the same data in different devices
-- [ ] Improve accessibility
-- [ ] Keyboard shorcuts
-- [ ] Offline
 
 ## Tech Stack
 
@@ -40,3 +36,10 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [Cloudflare Pages](https://pages.cloudflare.com)
 - [Cloudflare Functions](https://developers.cloudflare.com/pages/functions/)
 - [Cloudflare D1 database](https://developers.cloudflare.com/d1/)
+
+
+## Improvements
+- [ ] Offline PWA
+- [ ] Option to login/signup for using the same data in different devices
+- [ ] Improve accessibility
+- [ ] Keyboard shorcuts
