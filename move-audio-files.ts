@@ -1,9 +1,9 @@
 // Script to move kaikki audio files to public folder
 import fs from 'fs';
 // import https from 'https';
-import * as dict from 'most-common-words-fr-dict-generator';
+import * as dict from 'most-common-words-kaikki-dict-generator';
 import { stdout } from 'process';
-import { Dictionary } from 'most-common-words-fr-dict-generator/types';
+import { Dictionary } from 'most-common-words-kaikki-dict-generator/types';
 
 // @ts-ignore
 const dictionary: Dictionary = dict.default.dictionary;

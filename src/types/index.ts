@@ -1,4 +1,4 @@
-import type { DictionaryWord } from "most-common-words-fr-dict-generator/types";
+import type { DictionaryWord } from "most-common-words-kaikki-dict-generator/types";
 import type { PickRenameMulti } from "./utils";
 import type { Card as FSCard, State } from 'ts-fsrs';
 

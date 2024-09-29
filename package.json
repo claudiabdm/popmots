@@ -24,6 +24,7 @@
     "@unhead/vue": "^1.9.16",
     "chart.js": "^4.4.3",
     "howler": "^2.2.4",
+    "most-common-words-kaikki-dict-generator": "^2.0.0",
     "ts-fsrs": "^4.1.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"

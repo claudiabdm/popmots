@@ -20,3 +20,14 @@ export async function getWordEntries(word: string) {
         return [];
     }
 }
+
+
+export async function geAllWordEntries() {
+    try {
+        const entries: WordEntries = await fetch(`${API_URL}/all`).then(res => res.json());
+        return entries;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
