@@ -35,6 +35,9 @@ playwright-report/
 stats.html
 
 wrangler.toml
+.wrangler
 
 .env
+
+dev_dist
 
