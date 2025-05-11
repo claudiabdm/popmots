@@ -6,6 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import { generateIconNames } from 'vite-plugin-svg-sprite-names-typescript';
 import { visualizer } from "rollup-plugin-visualizer";
 import { DESCRIPTION, THEME_COLOR, TITLE } from './src/data/constants'
+import { buildSitemap } from './src/plugin/vite-vue-sitemap'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -40,6 +41,7 @@ export default defineConfig({
       typesFilePath: './src/types/icon-names.ts',
       typeName: 'IconName'
     }),
+    buildSitemap({ baseUrl: 'https://popmots.com', paths: ['/', '/study', '/settings'] }),
     visualizer()
   ],
   resolve: {

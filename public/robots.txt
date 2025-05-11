@@ -1,2 +1,3 @@
+Sitemap: https://popmots.com/sitemap.xml
 User-agent: *
 Disallow:
