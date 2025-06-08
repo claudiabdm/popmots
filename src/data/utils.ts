@@ -57,14 +57,24 @@ export async function loadLocalStore() {
 
 async function loadLocalCards(settings?: Store['settings']): Promise<Store['userCards']> {
     const localCards = localStorage.getItem('userCards');
-    const localCardsParsed: Store['userCards'] | undefined = localCards ? JSON.parse(localCards) : undefined;
-    if (localCardsParsed && localCardsParsed?.length > 1) {
-        return updateCardsPerDay(localCardsParsed, settings?.totalCardsPerDay, settings?.newCardsPerDay);
-    } else {
-        const allCards = await createAllCards(settings?.newCardsPerDay);
-        updateLocalStore(allCards, 'userCards');
-        return allCards;
+
+    if (localCards) {
+        const localCardsParsed = JSON.parse(localCards, (key, value) => {
+            if (key === 'due' || key === 'lastReview') {
+                return new Date(value)
+            }
+            return value
+        })
+
+        if (localCardsParsed && localCardsParsed?.length > 1) {
+            return updateCardsPerDay(localCardsParsed, settings?.totalCardsPerDay, settings?.newCardsPerDay);
+        }
     }
+
+    const allCards = await createAllCards(settings?.newCardsPerDay);
+    updateLocalStore(allCards, 'userCards');
+    return allCards;
+
 }
 
 function loadLocalSettings(): Store['settings'] {
