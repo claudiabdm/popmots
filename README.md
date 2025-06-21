@@ -12,6 +12,13 @@ Data is stored locally, so no need of log in but if you want to use the app on a
 
 Try it out at [https://popmots.com](https://popmots.com) !
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Tech Stack](#tech-stack)
+3. [Improvements](#improvements)
+4. [Run locally](#run-locally)
+
 ## Features
 
 - [x] Words from [my dictionary generator](https://github.com/claudiabdm/french-most-common-words-dictionary-generator) that uses [lexique](http://www.lexique.org/) and [kaikki](https://kaikki.org/) databases.
@@ -37,9 +44,23 @@ Try it out at [https://popmots.com](https://popmots.com) !
 - [Cloudflare Functions](https://developers.cloudflare.com/pages/functions/)
 - [Cloudflare D1 database](https://developers.cloudflare.com/d1/)
 
-
 ## Improvements
+
 - [ ] Offline PWA
 - [ ] Option to login/signup for using the same data in different devices
 - [ ] Improve accessibility
 - [ ] Keyboard shorcuts
+
+## Run locally
+
+1. Create local database
+
+```bash
+npx wrangler d1 execute dictionary --local --file=./database/schema.sql
+```
+
+2. Run wrangler in local mode
+
+```bash
+npm run preview-wrangler
+```
