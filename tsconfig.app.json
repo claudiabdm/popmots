@@ -8,6 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "WebWorker"]
   }
 }
