@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, PluginOption } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
@@ -42,7 +42,7 @@ export default defineConfig({
       typeName: 'IconName'
     }),
     buildSitemap({ baseUrl: 'https://popmots.com', paths: ['/', '/study', '/settings'] }),
-    visualizer()
+    visualizer() as PluginOption
   ],
   resolve: {
     alias: {
