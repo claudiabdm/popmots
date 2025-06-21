@@ -12,7 +12,7 @@ function generateSQLSchemaFromJson() {
         }
     }
 
-    const ouputFile = 'workers/schema.sql';
+    const ouputFile = './database/schema.sql';
     fs.writeFileSync(ouputFile, sql);
 }
 
