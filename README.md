@@ -59,8 +59,8 @@ Try it out at [https://popmots.com](https://popmots.com) !
 npx wrangler d1 execute dictionary --local --file=./database/schema.sql
 ```
 
-2. Run wrangler in local mode
+2. Run vue app and wrangler functions in local mode on http://localhost:8788
 
 ```bash
-npm run preview-wrangler
+npm run dev-wrangler
 ```
