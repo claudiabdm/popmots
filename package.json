@@ -11,7 +11,7 @@
     "dev": "vite --host",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "preview-wrangler": "npm run build && npx wrangler pages dev",
+    "dev-wrangler": "npm run build && npx wrangler pages dev --proxy 5173",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
     "build-only": "vite build",
