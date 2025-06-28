@@ -1,4 +1,6 @@
 import type { WordEntries } from "@/types";
+import { localDB } from "./indexedbd.ts/indexeddb";
+import { cloudflareApi } from "./cloudflare-api";
 
 const API_URL = './api/dictionary';
 
@@ -13,11 +15,14 @@ export async function getKeys() {
 }
 export async function getWordEntries(word: string) {
     try {
-        const entries: WordEntries = await fetch(`${API_URL}/${word}`).then(res => res.json());
+        const entries = await localDB.getWordEntries(word);
+        if (!entries) {
+            return []
+        }
         return entries;
     } catch (error) {
-        console.log(error);
-        return [];
+        const entries = await cloudflareApi.getWordEntries(word)
+        return entries;
     }
 }
 
