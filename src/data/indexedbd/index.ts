@@ -1,6 +1,6 @@
 import type { WordEntries } from '@/types'
 import { getObjectStore, promisifyRequest } from './utils'
-import { cloudflareApi } from '../cloudflare-api'
+import { api } from '../api'
 
 export const localDB = {
     init,
@@ -32,7 +32,7 @@ function openDictionaryDB(): Promise<IDBDatabase> {
 
             objectStore.createIndex("word", "word", { unique: false });
 
-            const words = await cloudflareApi.getAllWordEntries()
+            const words = await api.getDictionaryJson()
 
             await addWords(words)
 
