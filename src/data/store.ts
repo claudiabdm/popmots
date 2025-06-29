@@ -4,7 +4,7 @@ import { createNextSessionText, filterCardsByState, getFirstDue, loadLocalStore,
 import type { LocalStore, Store } from './types';
 import { DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY } from './constants';
 import type { UserCard } from '@/types';
-import { getWordEntries } from './api';
+import { api } from './api';
 import { useRouter } from 'vue-router';
 
 const params = generatorParameters({
@@ -129,7 +129,7 @@ export function useStore() {
     function setCurrentCard(card?: UserCard) {
         if (card) {
             if (card.name !== store.currentCard?.name) {
-                const entries = getWordEntries(card.name);
+                const entries = api.getWordEntries(card.name);
                 store.currentCard = { ...card, entries };
             }
         } else {

@@ -15,6 +15,9 @@ export default defineConfig({
     vueDevTools(),
     VitePWA({
       registerType: 'autoUpdate',
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       workbox: {
         clientsClaim: true,
         skipWaiting: true
@@ -33,7 +36,8 @@ export default defineConfig({
         injectThemeColor: true
       },
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
       }
     }),
     generateIconNames({
