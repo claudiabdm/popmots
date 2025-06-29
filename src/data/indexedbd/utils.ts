@@ -6,8 +6,7 @@ export function getObjectStore(db: IDBDatabase, name: string) {
 
 export function promisifyRequest<T>(request: IDBRequest<T>) {
     return new Promise<T>((resolve, reject) => {
-        request.addEventListener('success', (e) => {
-            console.log(request, e)
+        request.addEventListener('success', () => {
             resolve(request.result);
         }, { once: true });
 

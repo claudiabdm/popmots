@@ -2,7 +2,8 @@ import type { ScheduleCard, FSRSCard, UserCard } from "@/types";
 import { createEmptyCard, State } from "ts-fsrs";
 import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY } from "./constants";
 import type { LocalStore, Store } from "./types";
-import { getKeys } from "./api";
+import { api } from "./api";
+import { localDB } from "./indexedbd";
 
 export function massageCard(card: FSRSCard & { cid: string }): ScheduleCard {
     return {
@@ -50,6 +51,7 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 }
 
 export async function loadLocalStore() {
+    localDB.init();
     const settings = loadLocalSettings();
     const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay, totalCardsPerDay: settings.totalCardsPerDay });
     return { settings, userCards };
@@ -165,7 +167,7 @@ export async function createAllCards(cardsPerDay = DEFAULT_NEW_CARDS_PER_DAY) {
     const now = new Date();
     let newCardsAdded = 0;
     let due = 0;
-    const names = await getKeys();
+    const names = await api.getKeys();
     for (const name of names) {
         // Group cards by new cards per day
         if (newCardsAdded % cardsPerDay === 0) {
