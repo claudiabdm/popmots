@@ -32,12 +32,11 @@ function openDictionaryDB(): Promise<IDBDatabase> {
 
             objectStore.createIndex("word", "word", { unique: false });
 
-            resolve(request.result)
-
             const words = await cloudflareApi.getAllWordEntries()
 
             await addWords(words)
 
+            resolve(request.result)
         }, { once: true })
 
         request.addEventListener('success', () => {

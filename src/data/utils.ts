@@ -51,7 +51,7 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 }
 
 export async function loadLocalStore() {
-    localDB.init();
+    await localDB.init();
     const settings = loadLocalSettings();
     const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay, totalCardsPerDay: settings.totalCardsPerDay });
     return { settings, userCards };
