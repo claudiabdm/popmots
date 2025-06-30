@@ -3,7 +3,8 @@ import { createEmptyCard, State } from "ts-fsrs";
 import { DAY_IN_MILLISECONDS, DEFAULT_NEW_CARDS_PER_DAY, DEFAULT_TOTAL_CARDS_PER_DAY } from "./constants";
 import type { LocalStore, Store } from "./types";
 import { api } from "./api";
-import { localDB } from "./indexedbd";
+import { indexedDBWorker } from "./indexedbd";
+import { messageWorker } from "./indexedbd/utils";
 
 export function massageCard(card: FSRSCard & { cid: string }): ScheduleCard {
     return {
@@ -51,7 +52,8 @@ export function copyScheduleCard(schedule: ScheduleCard): ScheduleCard {
 }
 
 export async function loadLocalStore() {
-    await localDB.init();
+    await messageWorker(indexedDBWorker, { action: 'init' })
+
     const settings = loadLocalSettings();
     const userCards = await loadLocalCards({ newCardsPerDay: settings.newCardsPerDay, totalCardsPerDay: settings.totalCardsPerDay });
     return { settings, userCards };
