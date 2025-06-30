@@ -5,7 +5,6 @@ const API_URL = './api/dictionary';
 export const cloudflareApi = {
     getKeys,
     getWordEntries,
-    getAllWordEntries
 }
 
 async function getKeys() {
@@ -20,17 +19,6 @@ async function getKeys() {
 async function getWordEntries(word: string) {
     try {
         const entries: WordEntries = await fetch(`${API_URL}/${word}`).then(res => res.json());
-        return entries;
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
-
-
-async function getAllWordEntries() {
-    try {
-        const entries: WordEntries = await fetch(`${API_URL}/all`).then(res => res.json());
         return entries;
     } catch (error) {
         console.error(error);

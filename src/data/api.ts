@@ -1,5 +1,6 @@
-import { localDB } from "./indexedbd";
-import { cloudflareApi } from "./cloudflare-api";
+import { indexedDBWorker } from "./indexedbd";
+import type { WordEntries } from "@/types";
+import { messageWorker } from "./indexedbd/utils";
 
 const API_URL = './api/dictionary';
 
@@ -10,22 +11,25 @@ export const api = {
 
 async function getKeys() {
     try {
-        const keys: string[] = await fetch(`${API_URL}/keys`).then(res => res.json());
-        return keys;
+        const keys: string[] = await messageWorker<string[]>(indexedDBWorker, { action: 'getKeys' })
+        return keys
     } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
-async function getWordEntries(word: string) {
-    try {
-        const entries = await localDB.getWordEntries(word);
-        if (!entries) {
+        try {
+            const keys: string[] = await fetch(`${API_URL}/keys`).then(res => res.json())
+            return keys
+        } catch (error) {
+            console.error(error)
             return []
         }
-        return entries;
+    }
+}
+
+async function getWordEntries(word: string) {
+    try {
+        const entries = await messageWorker<WordEntries>(indexedDBWorker, { action: 'getWordEntries', value: word })
+        return entries
     } catch (error) {
-        const entries = await cloudflareApi.getWordEntries(word)
-        return entries;
+        console.error(error)
+        return []
     }
 }
