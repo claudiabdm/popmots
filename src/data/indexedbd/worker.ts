@@ -115,16 +115,21 @@ async function getKeys() {
 
 	const objectStore = getObjectStore(db, 'dictionary')
 
-	const index = objectStore.index('word')
+	const getRequest = objectStore.getAll()
 
-	const getRequest = index.getAll()
+	const result = await promisifyRequest<WordEntries>(getRequest)
 
-	const result = await promisifyRequest(getRequest)
+	const sortedEntries = result.sort((a, b) => a.rank - b.rank)
+
+	const addedKeys = new Set()
 
 	const keys = []
 
-	for (const entry of result) {
-		keys.push(entry.word)
+	for (const entry of sortedEntries) {
+		if (!addedKeys.has(entry.word)) {
+			addedKeys.add(entry.word)
+			keys.push(entry.word)
+		}
 	}
 
 	return keys
