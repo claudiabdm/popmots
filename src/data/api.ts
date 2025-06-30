@@ -11,20 +11,25 @@ export const api = {
 
 async function getKeys() {
     try {
-        const keys: string[] = await fetch(`${API_URL}/keys`).then(res => res.json());
-        return keys;
+        const keys: string[] = await messageWorker<string[]>(indexedDBWorker, { action: 'getKeys' })
+        return keys
     } catch (error) {
-        console.error(error);
-        return [];
+        try {
+            const keys: string[] = await fetch(`${API_URL}/keys`).then(res => res.json())
+            return keys
+        } catch (error) {
+            console.error(error)
+            return []
+        }
     }
 }
 
 async function getWordEntries(word: string) {
     try {
-        const entries = await messageWorker<WordEntries>(indexedDBWorker, { action: 'getWordEntries', value: word });
+        const entries = await messageWorker<WordEntries>(indexedDBWorker, { action: 'getWordEntries', value: word })
         return entries
     } catch (error) {
-        console.error(error);
-        return [];
+        console.error(error)
+        return []
     }
 }
